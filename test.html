@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>БілімАI — Тест ЕНТ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1628;
+  --bg3: #141d35;
+  --surface: #1a2444;
+  --surface2: #1f2b50;
+  --border: rgba(99,179,237,0.15);
+  --accent: #4f9cf9;
+  --accent2: #7b5cf9;
+  --accent3: #f97b4f;
+  --gold: #f5c842;
+  --green: #3ecf8e;
+  --red: #f96060;
+  --text: #e8eeff;
+  --text2: #8da0c4;
+  --text3: #4d6080;
+  --r: 16px;
+  --r2: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: 'Onest', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+/* GRID BG */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(79,156,249,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,156,249,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top:0; left:0; right:0;
+  z-index:100;
+  padding: 0 2rem;
+  height: 72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background: rgba(10,14,26,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+
+.logo span {
+  background: linear-gradient(135deg, var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-right {
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+}
+
+/* LANGUAGE SWITCHER */
+.lang-switcher {
+  display:flex;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  gap: 2px;
+}
+
+.lang-btn {
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.nav-links {
+  display:flex;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: 'Onest', sans-serif;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text);
+  background: var(--surface);
+}
+
+select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  padding: 14px 32px;
+  font-family: 'Onest', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+select:hover { background-color: var(--surface2); border-color: var(--accent); }
+
+select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,156,249,0.1); }
+
+/* BUTTON STYLES */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(79,156,249,0.2);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(79,156,249,0.35); }
+.btn-primary:hover::before { background: rgba(255,255,255,0.08); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  padding: 12px 24px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-secondary:hover { background: var(--surface2); border-color: rgba(99,179,237,0.3); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+
+/* PAGES */
+.page { display:none; position:relative; z-index:1; }
+.page.active { display:block; }
+
+/* =================== TEST PAGE =================== */
+#page-test {
+  min-height: 100vh;
+  padding-top: 72px;
+}
+
+.test-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.test-header {
+  text-align:center;
+  margin-bottom: 2rem;
+}
+
+.test-header h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+.test-header p {
+  color: var(--text2);
+  font-size: 1.1rem;
+}
+
+/* SETUP */
+.test-setup {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.test-setup h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.subject-selector {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.subject-item {
+  display:flex;
+  align-items:center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.subject-item:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.subject-item.active {
+  border-color: var(--accent);
+  background: rgba(79,156,249,0.1);
+}
+
+.subject-item-emoji {
+  font-size: 1.5rem;
+}
+
+.subject-item-name {
+  font-weight: 500;
+}
+
+.subject-item-count {
+  margin-left:auto;
+  color: var(--text2);
+  font-size: 0.9rem;
+}
+
+/* ACTIVE TEST */
+.test-active { display:none; }
+
+.test-meta {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom: 1rem;
+}
+
+.test-counter {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.test-timer {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.5rem 1rem;
+}
+
+.test-timer.warning {
+  color: var(--red);
+  background: rgba(249,96,96,0.1);
+  border-color: rgba(249,96,96,0.2);
+}
+
+.test-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.test-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.question-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.question-subject-tag {
+  display:inline-flex;
+  align-items:center;
+  gap: 0.5rem;
+  background: rgba(79,156,249,0.1);
+  border: 1px solid rgba(79,156,249,0.3);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.question-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.options-grid {
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.option-btn {
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+  text-align:left;
+  color: var(--text);
+}
+
+.option-btn:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.option-btn.correct {
+  border-color: var(--green);
+  background: rgba(62,207,142,0.1);
+}
+
+.option-btn.wrong {
+  border-color: var(--red);
+  background: rgba(249,96,96,0.1);
+}
+
+.option-letter {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 600;
+  flex-shrink:0;
+}
+
+.explanation-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.5rem;
+  display:none;
+}
+
+.explanation-box.show {
+  display:block;
+}
+
+.test-btn-row {
+  display:flex;
+  gap: 1rem;
+  justify-content:center;
+  margin-top: 2rem;
+}
+
+/* TEST RESULTS */
+.test-results {
+  display:none;
+  text-align:center;
+}
+
+.result-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--pct) * 1%), var(--bg2) 0);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  margin: 0 auto 2rem;
+  position:relative;
+}
+
+.result-circle::before {
+  content:'';
+  position:absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.result-score {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  position:relative;
+  z-index:1;
+}
+
+.result-total {
+  font-size: 0.9rem;
+  color: var(--text2);
+  position:relative;
+  z-index:1;
+}
+
+.result-grade {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.result-message {
+  font-size: 1.1rem;
+  color: var(--text2);
+  margin-bottom: 2rem;
+  max-width: 400px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.result-details {
+  display:flex;
+  justify-content:center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.result-detail-item {
+  text-align:center;
+}
+
+.result-detail-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display:block;
+  margin-bottom: 0.25rem;
+}
+
+.result-detail-label {
+  font-size: 0.9rem;
+  color: var(--text2);
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#" onclick="window.location.href='БілімAI_ENT.html'; return false;">БілімA<span>I</span></a>
+  <nav class="nav-links">
+    <a href="#" onclick="window.location.href='БілімAI_ENT.html'; return false;" class="nav-link" id="nav-home"><span data-i18n="nav_home">Главная</span></a>
+    <a href="chat.html" class="nav-link" id="nav-chat"><span data-i18n="nav_chat">Репетитор</span></a>
+    <a href="test.html" class="nav-link active" id="nav-test"><span data-i18n="nav_test">Тест ЕНТ</span></a>
+    <a href="progress.html" class="nav-link" id="nav-progress"><span data-i18n="nav_progress">Прогресс</span></a>
+  </nav>
+  <div class="header-right">
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="setLang('kz')">ҚАЗ</button>
+      <button class="lang-btn active" onclick="setLang('ru')">РУС</button>
+      <button class="lang-btn" onclick="setLang('en')">ENG</button>
+    </div>
+  </div>
+</header>
+
+<div id="page-test" class="page active">
+  <div class="test-container">
+    <div class="test-header">
+      <h2 data-i18n="test_title">🎯 Тест в формате ЕНТ</h2>
+      <p data-i18n="test_sub" style="color:var(--text2)">Выбери предметы и начни тест</p>
+    </div>
+
+    <!-- SETUP -->
+    <div class="test-setup" id="test-setup">
+      <h3 data-i18n="test_choose_subjects">Выбери предметы</h3>
+      <div class="subject-selector" id="subject-selector"></div>
+
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:0.85rem;color:var(--text2);margin-bottom:8px;" data-i18n="test_num_questions">Количество вопросов</div>
+          <select id="q-count">
+            <option value="10">10 вопросов</option>
+            <option value="20" selected>20 вопросов</option>
+            <option value="40">40 вопросов</option>
+            <option value="120">120 вопросов (полный ЕНТ)</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="startTest()" style="margin-top:auto">
+          🚀 <span data-i18n="btn_start">Начать тест</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ACTIVE TEST -->
+    <div class="test-active" id="test-active">
+      <div class="test-meta">
+        <span class="test-counter" id="test-counter">Вопрос 1 из 20</span>
+        <span class="test-timer" id="test-timer">40:00</span>
+      </div>
+      <div class="test-progress-bar">
+        <div class="test-progress-fill" id="test-progress" style="width:0%"></div>
+      </div>
+
+      <div class="question-card" id="question-card">
+        <div class="question-subject-tag" id="q-subject-tag">📐 Математика</div>
+        <p class="question-text" id="question-text">Вопрос загружается...</p>
+      </div>
+
+      <div class="options-grid" id="options-grid"></div>
+
+      <div class="explanation-box" id="explanation-box">
+        <strong>💡 Объяснение:</strong> <span id="explanation-text"></span>
+      </div>
+
+      <div class="test-btn-row">
+        <button class="btn-secondary" onclick="skipQuestion()" id="skip-btn" data-i18n="btn_skip">Пропустить</button>
+        <button class="btn-primary" onclick="nextQuestion()" id="next-btn" style="display:none" data-i18n="btn_next">Следующий →</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="test-results" id="test-results">
+      <div class="result-circle" id="result-circle">
+        <span class="result-score" id="result-score">0</span>
+        <span class="result-total" id="result-total">из 20</span>
+      </div>
+      <div class="result-grade" id="result-grade">🎯</div>
+      <p class="result-message" id="result-message"></p>
+      <div class="result-details">
+        <div class="result-detail-item">
+          <span class="result-detail-num" id="r-correct" style="color:var(--green)">0</span>
+          <span class="result-detail-label" data-i18n="r_correct">Правильно</span>
+        </div>
+        <div class="result-detail-item">
+          <span class="result-detail-num" id="r-wrong" style="color:var(--red)">0</span>
+          <span class="result-detail-label" data-i18n="r_wrong">Неправильно</span>
+        </div>
+        <div class="result-detail-item">
+          <span class="result-detail-num" id="r-skip" style="color:var(--gold)">0</span>
+          <span class="result-detail-label" data-i18n="r_skip">Пропущено</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="startTest()">🔄 <span data-i18n="btn_retry">Пройти ещё раз</span></button>
+        <button class="btn-secondary" onclick="window.location.href='chat.html'">💬 <span data-i18n="btn_study_errors">Разобрать ошибки с AI</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// I18N translations
+const I18N = {
+  ru: {
+    nav_home:'Главная', nav_chat:'Репетитор', nav_test:'Тест ЕНТ', nav_progress:'Прогресс',
+    hero_line1:'Подготовься к ЕНТ', hero_line2:'с AI-репетитором',
+    hero_desc:'Персональный AI-ассистент на казахском и русском языке. Объясняет темы, проверяет знания и отслеживает твой прогресс.',
+    btn_start_chat:'Начать обучение', btn_start_test:'Пройти тест ЕНТ',
+    stat_questions:'Вопросов ЕНТ', stat_subjects:'Предметов', stat_ai:'AI модель', stat_langs:'Языка',
+    features_title:'Всё что нужно для ЕНТ', features_sub:'Используем лучшие AI-инструменты от alem.plus',
+    feat1_title:'AI-репетитор', feat1_desc:'Задавай любые вопросы по предметам. KazLLM объяснит на казахском или русском языке.',
+    feat2_title:'Тест в формате ЕНТ', feat2_desc:'Реальные вопросы ЕНТ с таймером. После теста AI объяснит каждую ошибку.',
+    feat3_title:'Голосовой ввод', feat3_desc:'Говори вопросы на казахском или русском. Speech-to-text Kazakh от alem.plus.',
+    feat4_title:'Статистика прогресса', feat4_desc:'Отслеживай прогресс по каждому предмету. Видь слабые места.',
+    feat5_title:'Умный поиск', feat5_desc:'Embedder от alem.plus находит самые релевантные объяснения из базы знаний.',
+    feat6_title:'3 языка', feat6_desc:'Интерфейс на казахском, русском и английском языке.',
+    subjects_title:'Предметы', subjects_sub:'Все предметы ЕНТ в одном месте',
+    subj_math:'Математика', subj_history:'История Казахстана', subj_kazakh:'Казахский язык',
+    subj_biology:'Биология', subj_chemistry:'Химия', subj_physics:'Физика',
+    subj_geography:'География', subj_literature:'Литература',
+    sidebar_subjects:'Предметы',
+    test_title:'🎯 Тест в формате ЕНТ', test_sub:'Выбери предметы и начни тест',
+    test_choose_subjects:'Выбери предметы', test_num_questions:'Количество вопросов',
+    btn_start:'Начать тест', btn_skip:'Пропустить', btn_next:'Следующий →',
+    r_correct:'Правильно', r_wrong:'Неправильно', r_skip:'Пропущено',
+    btn_retry:'Пройти ещё раз', btn_study_errors:'Разобрать ошибки с AI',
+    progress_title:'📊 Мой прогресс', progress_sub:'Твоя статистика и динамика обучения',
+    stat_tests:'Тестов пройдено', stat_avg:'Средний балл', stat_answered:'Вопросов отвечено', stat_sessions:'Сессий с репетитором',
+    progress_by_subject:'Прогресс по предметам', progress_history:'История тестов',
+    chat_welcome:'Привет! 👋 Я БілімAI — твой AI-репетитор для подготовки к ЕНТ. Я использую **KazLLM** и **Embedder** от alem.plus. Задай любой вопрос по предмету — объясню понятно!',
+    chat_placeholder:'Задай вопрос по предмету...',
+    voice_listening:'Слушаю... Говорите',
+    question:'Вопрос',
+    no_data:'Пока нет данных',
+    first_test:'Пройди первый тест!',
+    no_history:'Нет истории',
+    excellent:'🏆 Отлично!',
+    great_result:'Блестящий результат!',
+    good:'⭐ Хорошо!',
+    good_prep:'Отличная подготовка!',
+    not_bad:'📈 Неплохо',
+    improve:'Хороший результат, но есть что улучшить.',
+    study:'📚 Учись!',
+    more_practice:'Нужно больше практики.',
+    dont_give_up:'💪 Не сдавайся!',
+    start_basics:'Начни с основ.',
+    select_subjects:'Выбери хотя бы один предмет!',
+  },
+  kz: {
+    nav_home:'Басты бет', nav_chat:'Репетитор', nav_test:'ҰБТ тесті', nav_progress:'Прогресс',
+    hero_line1:'ҰБТ-ға дайындал', hero_line2:'AI-репетитормен',
+    hero_desc:'Қазақ және орыс тілдеріндегі жеке AI-көмекші. Тақырыптарды түсіндіреді, білімді тексереді және прогресіңді қадағалайды.',
+    btn_start_chat:'Оқуды бастау', btn_start_test:'ҰБТ тестін өту',
+    stat_questions:'ҰБТ сұрақтары', stat_subjects:'Пәндер', stat_ai:'AI модель', stat_langs:'Тіл',
+    features_title:'ҰБТ үшін қажеттінің бәрі', features_sub:'alem.plus-тан ең жақсы AI-құралдарын қолданамыз',
+    feat1_title:'AI-репетитор', feat1_desc:'Кез келген пән бойынша сұрақ қой. KazLLM қазақ немесе орыс тілінде түсіндіреді.',
+    feat2_title:'ҰБТ форматындағы тест', feat2_desc:'Таймермен шынайы ҰБТ сұрақтары. Тесттен кейін AI әр қатені түсіндіреді.',
+    feat3_title:'Дауыс енгізу', feat3_desc:'Қазақ немесе орыс тілінде сұрақ айт. alem.plus-тан Kazakh Speech-to-text.',
+    feat4_title:'Прогресс статистикасы', feat4_desc:'Әр пән бойынша прогрессті қадағала. Әлсіз жерлерді көріңіз.',
+    feat5_title:'Ақылды іздеу', feat5_desc:'alem.plus Embedder базасынан ең релевантты түсіндірмелерді табады.',
+    feat6_title:'3 тіл', feat6_desc:'Қазақ, орыс және ағылшын тілдеріндегі интерфейс.',
+    subjects_title:'Пәндер', subjects_sub:'Барлық ҰБТ пәндері бір жерде',
+    subj_math:'Математика', subj_history:'Қазақстан тарихы', subj_kazakh:'Қазақ тілі',
+    subj_biology:'Биология', subj_chemistry:'Химия', subj_physics:'Физика',
+    subj_geography:'География', subj_literature:'Әдебиет',
+    sidebar_subjects:'Пәндер',
+    test_title:'🎯 ҰБТ форматындағы тест', test_sub:'Пәндерді таңда және тестті баста',
+    test_choose_subjects:'Пәндерді таңда', test_num_questions:'Сұрақтар саны',
+    btn_start:'Тестті бастау', btn_skip:'Өткізу', btn_next:'Келесі →',
+    r_correct:'Дұрыс', r_wrong:'Қате', r_skip:'Өткізілген',
+    btn_retry:'Тағы өту', btn_study_errors:'AI-пен қателерді талқылау',
+    progress_title:'📊 Менің прогресім', progress_sub:'Сенің статистикаң және оқу динамикаң',
+    stat_tests:'Өткен тестер', stat_avg:'Орташа балл', stat_answered:'Жауап берілген сұрақтар', stat_sessions:'Репетитормен сессиялар',
+    progress_by_subject:'Пәндер бойынша прогресс', progress_history:'Тест тарихы',
+    chat_welcome:'Сәлем! 👋 Мен БілімAI — ҰБТ-ға дайындалуға арналған AI-репетиторыңмын. Мен **KazLLM** және **Embedder**-ді alem.plus-тан қолданамын. Кез келген пән бойынша сұрақ қой — түсінікті түсіндіремін!',
+    chat_placeholder:'Пән бойынша сұрақ қой...',
+    voice_listening:'Тыңдап тұрмын... Сөйлеңіз',
+    question:'Сұрақ',
+    no_data:'Әлі деректер жоқ',
+    first_test:'Бірінші тестті өтіңіз!',
+    no_history:'Тарих жоқ',
+    excellent:'🏆 Өте жақсы!',
+    great_result:'Тамаша нәтиже!',
+    good:'⭐ Жақсы!',
+    good_prep:'Тамаша дайындық!',
+    not_bad:'📈 Жаман емес',
+    improve:'Жақсы нәтиже, бірақ жақсартуға болады.',
+    study:'📚 Оқы!',
+    more_practice:'Көбірек практика қажет.',
+    dont_give_up:'💪 Бас тартпа!',
+    start_basics:'Негіздерден баста.',
+    select_subjects:'Кемінде бір пәнді таңда!',
+  },
+  en: {
+    nav_home:'Home', nav_chat:'Tutor', nav_test:'ENT Test', nav_progress:'Progress',
+    hero_line1:'Prepare for ENT', hero_line2:'with AI Tutor',
+    hero_desc:'Personal AI assistant in Kazakh and Russian. Explains topics, checks knowledge and tracks your progress.',
+    btn_start_chat:'Start Learning', btn_start_test:'Take ENT Test',
+    stat_questions:'ENT Questions', stat_subjects:'Subjects', stat_ai:'AI Model', stat_langs:'Languages',
+    features_title:'Everything for ENT', features_sub:'Using best AI tools from alem.plus',
+    feat1_title:'AI Tutor', feat1_desc:'Ask any questions on subjects. KazLLM explains in Kazakh or Russian.',
+    feat2_title:'ENT Format Test', feat2_desc:'Real ENT questions with timer. After test AI explains each mistake.',
+    feat3_title:'Voice Input', feat3_desc:'Speak questions in Kazakh or Russian. Speech-to-text Kazakh from alem.plus.',
+    feat4_title:'Progress Statistics', feat4_desc:'Track progress on each subject. See weak spots.',
+    feat5_title:'Smart Search', feat5_desc:'Embedder from alem.plus finds most relevant explanations from knowledge base.',
+    feat6_title:'3 Languages', feat6_desc:'Interface in Kazakh, Russian and English.',
+    subjects_title:'Subjects', subjects_sub:'All ENT subjects in one place',
+    subj_math:'Mathematics', subj_history:'Kazakhstan History', subj_kazakh:'Kazakh Language',
+    subj_biology:'Biology', subj_chemistry:'Chemistry', subj_physics:'Physics',
+    subj_geography:'Geography', subj_literature:'Literature',
+    sidebar_subjects:'Subjects',
+    test_title:'🎯 ENT Format Test', test_sub:'Choose subjects and start test',
+    test_choose_subjects:'Choose subjects', test_num_questions:'Number of questions',
+    btn_start:'Start Test', btn_skip:'Skip', btn_next:'Next →',
+    r_correct:'Correct', r_wrong:'Wrong', r_skip:'Skipped',
+    btn_retry:'Take Again', btn_study_errors:'Review Errors with AI',
+    progress_title:'📊 My Progress', progress_sub:'Your statistics and learning dynamics',
+    stat_tests:'Tests Taken', stat_avg:'Average Score', stat_answered:'Questions Answered', stat_sessions:'Tutor Sessions',
+    progress_by_subject:'Progress by Subject', progress_history:'Test History',
+    chat_welcome:'Hello! 👋 I\'m БілімAI — your AI tutor for ENT preparation. I use **KazLLM** and **Embedder** from alem.plus. Ask any question on a subject — I\'ll explain clearly!',
+    chat_placeholder:'Ask a question on the subject...',
+    voice_listening:'Listening... Speak',
+    question:'Question',
+    no_data:'No data yet',
+    first_test:'Take the first test!',
+    no_history:'No history',
+    excellent:'🏆 Excellent!',
+    great_result:'Brilliant result!',
+    good:'⭐ Good!',
+    good_prep:'Great preparation!',
+    not_bad:'📈 Not bad',
+    improve:'Good result, but there\'s room for improvement.',
+    study:'📚 Study!',
+    more_practice:'Need more practice.',
+    dont_give_up:'💪 Don\'t give up!',
+    start_basics:'Start with basics.',
+    select_subjects:'Choose at least one subject!',
+  }
+};
+
+// Копируем недостающие переводы для kz и en (для краткости используем ru как fallback)
+for (let lang of ['kz','en']) {
+  for (let key in I18N.ru) {
+    if (!I18N[lang][key]) I18N[lang][key] = I18N.ru[key];
+  }
+}
+
+// ENT QUESTIONS DATABASE (sample)
+const QUESTIONS_DB = {
+  math: [
+    { q:{ru:'Найдите значение выражения: log₂(32)', kz:'log₂(32) өрнегінің мәнін табыңыз', en:'Find the value of the expression: log₂(32)'}, opts:[{ru:'3',kz:'3',en:'3'},{ru:'4',kz:'4',en:'4'},{ru:'5',kz:'5',en:'5'},{ru:'6',kz:'6',en:'6'}], ans:2, exp:{ru:'log₂(32) = log₂(2⁵) = 5. Логарифм числа 32 по основанию 2 равен 5, так как 2⁵ = 32.', kz:'log₂(32) = log₂(2⁵) = 5. 32 санының 2 негізіндегі логарифмі 5-ке тең, өйткені 2⁵ = 32.', en:'log₂(32) = log₂(2⁵) = 5. The logarithm of 32 to base 2 is 5, since 2⁵ = 32.'} },
+    { q:{ru:'Решите уравнение: 2x² - 8 = 0', kz:'Теңдеуді шешіңіз: 2x² - 8 = 0', en:'Solve the equation: 2x² - 8 = 0'}, opts:[{ru:'x = ±1',kz:'x = ±1',en:'x = ±1'},{ru:'x = ±2',kz:'x = ±2',en:'x = ±2'},{ru:'x = ±4',kz:'x = ±4',en:'x = ±4'},{ru:'x = ±8',kz:'x = ±8',en:'x = ±8'}], ans:1, exp:{ru:'2x² = 8, x² = 4, x = ±2.', kz:'2x² = 8, x² = 4, x = ±2.', en:'2x² = 8, x² = 4, x = ±2.'} },
+    { q:{ru:'Чему равен sin(30°)?', kz:'sin(30°) неге тең?', en:'What is sin(30°)?'}, opts:[{ru:'√3/2',kz:'√3/2',en:'√3/2'},{ru:'1/2',kz:'1/2',en:'1/2'},{ru:'√2/2',kz:'√2/2',en:'√2/2'},{ru:'1',kz:'1',en:'1'}], ans:1, exp:{ru:'sin(30°) = 1/2.', kz:'sin(30°) = 1/2.', en:'sin(30°) = 1/2.'} },
+    { q:{ru:'Производная функции f(x) = x³ равна:', kz:'f(x) = x³ функциясының туындысы:', en:'The derivative of the function f(x) = x³ is:'}, opts:[{ru:'3x',kz:'3x',en:'3x'},{ru:'x²',kz:'x²',en:'x²'},{ru:'3x²',kz:'3x²',en:'3x²'},{ru:'2x²',kz:'2x²',en:'2x²'}], ans:2, exp:{ru:'(x³)\' = 3x²', kz:'(x³)\' = 3x²', en:'(x³)\' = 3x²'} },
+    { q:{ru:'Вычислите: ∫x² dx', kz:'Есептеңіз: ∫x² dx', en:'Calculate: ∫x² dx'}, opts:[{ru:'x³',kz:'x³',en:'x³'},{ru:'x³/3 + C',kz:'x³/3 + C',en:'x³/3 + C'},{ru:'2x + C',kz:'2x + C',en:'2x + C'},{ru:'3x² + C',kz:'3x² + C',en:'3x² + C'}], ans:1, exp:{ru:'∫x² dx = x³/3 + C.', kz:'∫x² dx = x³/3 + C.', en:'∫x² dx = x³/3 + C.'} },
+    { q:{ru:'Найдите площадь круга с радиусом 5', kz:'Радиусы 5 болатын шеңбердің ауданын табыңыз', en:'Find the area of a circle with radius 5'}, opts:[{ru:'10π',kz:'10π',en:'10π'},{ru:'15π',kz:'15π',en:'15π'},{ru:'25π',kz:'25π',en:'25π'},{ru:'50π',kz:'50π',en:'50π'}], ans:2, exp:{ru:'S = πr² = 25π.', kz:'S = πr² = 25π.', en:'S = πr² = 25π.'} },
+    { q:{ru:'Сумма углов треугольника равна:', kz:'Үшбұрыш бұрыштарының қосындысы:', en:'The sum of the angles of a triangle is:'}, opts:[{ru:'90°',kz:'90°',en:'90°'},{ru:'180°',kz:'180°',en:'180°'},{ru:'270°',kz:'270°',en:'270°'},{ru:'360°',kz:'360°',en:'360°'}], ans:1, exp:{ru:'Сумма углов = 180°.', kz:'Бұрыштар қосындысы = 180°.', en:'Sum of angles = 180°.'} },
+    { q:{ru:'Решите неравенство: x² - 4 > 0', kz:'Теңсіздікті шешіңіз: x² - 4 > 0', en:'Solve the inequality: x² - 4 > 0'}, opts:[{ru:'x > 2',kz:'x > 2',en:'x > 2'},{ru:'|x| < 2',kz:'|x| < 2',en:'|x| < 2'},{ru:'|x| > 2',kz:'|x| > 2',en:'|x| > 2'},{ru:'x < -2',kz:'x < -2',en:'x < -2'}], ans:2, exp:{ru:'|x| > 2', kz:'|x| > 2', en:'|x| > 2'} },
+  ],
+  history: [
+    { q:{ru:'В каком году была принята Конституция Республики Казахстан?', kz:'Қазақстан Республикасының Конституциясы қай жылы қабылданды?', en:'In what year was the Constitution of the Republic of Kazakhstan adopted?'}, opts:[{ru:'1991',kz:'1991',en:'1991'},{ru:'1992',kz:'1992',en:'1992'},{ru:'1993',kz:'1993',en:'1993'},{ru:'1995',kz:'1995',en:'1995'}], ans:3, exp:{ru:'Конституция РК принята 30 августа 1995 года.', kz:'ҚР Конституциясы 1995 жылғы 30 тамызда қабылданды.', en:'The Constitution of the RK was adopted on August 30, 1995.'} },
+    { q:{ru:'Кто был первым президентом Казахстана?', kz:'Қазақстанның бірінші президенті кім болды?', en:'Who was the first president of Kazakhstan?'}, opts:[{ru:'Касым-Жомарт Токаев',kz:'Қасым-Жомарт Тоқаев',en:'Kassym-Jomart Tokayev'},{ru:'Нурсултан Назарбаев',kz:'Нұрсұлтан Назарбаев',en:'Nursultan Nazarbayev'},{ru:'Динмухамед Кунаев',kz:'Дінмұхамед Қонаев',en:'Dinmukhamed Kunaev'},{ru:'Жамбыл Жабаев',kz:'Жамбыл Жабаев',en:'Zhambyl Zhabayev'}], ans:1, exp:{ru:'Нурсултан Назарбаев — первый президент.', kz:'Нұрсұлтан Назарбаев — бірінші президент.', en:'Nursultan Nazarbayev — the first president.'} },
+    { q:{ru:'Столица Казахстана с 1997 года:', kz:'1997 жылдан бастап Қазақстанның астанасы:', en:'The capital of Kazakhstan since 1997:'}, opts:[{ru:'Алматы',kz:'Алматы',en:'Almaty'},{ru:'Шымкент',kz:'Шымкент',en:'Shymkent'},{ru:'Астана',kz:'Астана',en:'Astana'},{ru:'Семей',kz:'Семей',en:'Semey'}], ans:2, exp:{ru:'Астана (ранее Акмола) — столица с 1997 года.', kz:'Астана (бұрынғы Ақмола) — 1997 жылдан бастап астана.', en:'Astana (formerly Akmola) — capital since 1997.'} },
+    { q:{ru:'Казахстан обрел независимость в:', kz:'Қазақстан тәуелсіздік алды:', en:'Kazakhstan gained independence in:'}, opts:[{ru:'1990',kz:'1990',en:'1990'},{ru:'1991',kz:'1991',en:'1991'},{ru:'1992',kz:'1992',en:'1992'},{ru:'1993',kz:'1993',en:'1993'}], ans:1, exp:{ru:'16 декабря 1991 года.', kz:'1991 жылғы 16 желтоқсан.', en:'December 16, 1991.'} },
+  ],
+  biology: [
+    { q:{ru:'Основная функция митохондрий в клетке:', kz:'Клеткадағы митохондриялардың негізгі қызметі:', en:'The main function of mitochondria in the cell:'}, opts:[{ru:'Синтез белков',kz:'Ақуыздар синтезі',en:'Protein synthesis'},{ru:'Выработка энергии (АТФ)',kz:'Энергия өндіру (АТФ)',en:'Energy production (ATP)'},{ru:'Хранение ДНК',kz:'ДНК сақтау',en:'DNA storage'},{ru:'Фотосинтез',kz:'Фотосинтез',en:'Photosynthesis'}], ans:1, exp:{ru:'Митохондрии — энергетические станции клетки.', kz:'Митохондриялар — клетканың энергетикалық станциялары.', en:'Mitochondria are the energy stations of the cell.'} },
+    { q:{ru:'Сколько хромосом содержится в соматических клетках человека?', kz:'Адамның соматикалық клеткаларында қанша хромосома бар?', en:'How many chromosomes are there in human somatic cells?'}, opts:[{ru:'23',kz:'23',en:'23'},{ru:'46',kz:'46',en:'46'},{ru:'44',kz:'44',en:'44'},{ru:'48',kz:'48',en:'48'}], ans:1, exp:{ru:'46 хромосом (23 пары).', kz:'46 хромосома (23 жұп).', en:'46 chromosomes (23 pairs).'} },
+  ],
+  chemistry: [
+    { q:{ru:'Атомный номер углерода в таблице Менделеева:', kz:'Менделеев кестесінде көміртектің атомдық нөмірі:', en:'The atomic number of carbon in the periodic table:'}, opts:[{ru:'4',kz:'4',en:'4'},{ru:'6',kz:'6',en:'6'},{ru:'8',kz:'8',en:'8'},{ru:'12',kz:'12',en:'12'}], ans:1, exp:{ru:'Углерод (C) имеет атомный номер 6.', kz:'Көміртек (C) атомдық нөмірі 6.', en:'Carbon (C) has atomic number 6.'} },
+    { q:{ru:'Химическая формула воды:', kz:'Судың химиялық формуласы:', en:'The chemical formula of water:'}, opts:[{ru:'H₂O₂',kz:'H₂O₂',en:'H₂O₂'},{ru:'HO',kz:'HO',en:'HO'},{ru:'H₂O',kz:'H₂O',en:'H₂O'},{ru:'H₃O',kz:'H₃O',en:'H₃O'}], ans:2, exp:{ru:'Вода — H₂O.', kz:'Су — H₂O.', en:'Water is H₂O.'} },
+  ],
+  physics: [
+    { q:{ru:'Формула второго закона Ньютона:', kz:'Ньютонның екінші заңының формуласы:', en:'The formula of Newton\'s second law:'}, opts:[{ru:'F = ma',kz:'F = ma',en:'F = ma'},{ru:'F = mv',kz:'F = mv',en:'F = mv'},{ru:'F = m/a',kz:'F = m/a',en:'F = m/a'},{ru:'F = m²a',kz:'F = m²a',en:'F = m²a'}], ans:0, exp:{ru:'F = ma.', kz:'F = ma.', en:'F = ma.'} },
+    { q:{ru:'Единица измерения электрического сопротивления:', kz:'Электрлік кедергінің өлшем бірлігі:', en:'The unit of electrical resistance:'}, opts:[{ru:'Ампер',kz:'Ампер',en:'Ampere'},{ru:'Вольт',kz:'Вольт',en:'Volt'},{ru:'Ом',kz:'Ом',en:'Ohm'},{ru:'Ватт',kz:'Ватт',en:'Watt'}], ans:2, exp:{ru:'Сопротивление измеряется в Омах.', kz:'Кедергі Оммен өлшенеді.', en:'Resistance is measured in Ohms.'} },
+  ],
+  geography: [
+    { q:{ru:'Самое крупное озеро Казахстана:', kz:'Қазақстанның ең үлкен көлі:', en:'The largest lake in Kazakhstan:'}, opts:[{ru:'Аральское море',kz:'Арал теңізі',en:'Aral Sea'},{ru:'Балхаш',kz:'Балқаш',en:'Balkhash'},{ru:'Зайсан',kz:'Зайсан',en:'Zaysan'},{ru:'Алаколь',kz:'Алақөл',en:'Alakol'}], ans:1, exp:{ru:'Озеро Балхаш — крупнейшее.', kz:'Балқаш көлі — ең үлкен.', en:'Lake Balkhash is the largest.'} },
+  ],
+  kazakh: [
+    { q:{ru:'Ресми іс қағаздарын жазуда қолданылатын стиль:', kz:'Ресми іс қағаздарын жазуда қолданылатын стиль:', en:'The style used in writing official documents:'}, opts:[{ru:'Публицистикалық',kz:'Публицистикалық',en:'Journalistic'},{ru:'Ресми-іскерлік',kz:'Ресми-іскерлік',en:'Official-business'},{ru:'Ғылыми',kz:'Ғылыми',en:'Scientific'},{ru:'Көркем',kz:'Көркем',en:'Artistic'}], ans:1, exp:{ru:'Ресми-іскерлік стиль.', kz:'Ресми-іскерлік стиль.', en:'Official-business style.'} },
+  ],
+  literature: [
+    { q:{ru:'Кто написал поэму "Путь Абая"?', kz:'"Абай жолы" поэмасын кім жазды?', en:'Who wrote the poem "The Path of Abai"?'}, opts:[{ru:'Абай Кунанбаев',kz:'Абай Құнанбаев',en:'Abai Kunanbayev'},{ru:'Мухтар Ауэзов',kz:'Мұхтар Әуезов',en:'Mukhtar Auezov'},{ru:'Жамбыл Жабаев',kz:'Жамбыл Жабаев',en:'Zhambyl Zhabayev'},{ru:'Ильяс Джансугуров',kz:'Ілияс Жансүгіров',en:'Ilyas Zhansugurov'}], ans:1, exp:{ru:'Мухтар Ауэзов.', kz:'Мұхтар Әуезов.', en:'Mukhtar Auezov.'} },
+  ]
+};
+
+// =================== STATE ===================
+let currentLang = 'ru';
+let testQuestions = [];
+let currentQIndex = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let skipCount = 0;
+let answered = false;
+let timeLeft = 0;
+let testTimer = null;
+let testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
+
+// =================== API KEYS (alem.plus) ===================
+const ALEM_API = {
+  alemllm: { key: 'sk-O1GwtY734qQtiZw9YlRVCQ', url: 'https://llm.alem.ai/v1/chat/completions', model: 'alemllm' },
+  kazllm: { key: 'sk-r-OVjlrI_QRGBC8BW9tKvw', url: 'https://llm.alem.ai/v1/chat/completions', model: 'kazllm' },
+  stt: { key: 'sk-v-NTBaT--JFb8Q6eL4lgog', url: 'https://llm.alem.ai/v1/audio/transcriptions' },
+  embedder: { key: 'sk-Cxa2F3WzR41rCC0Ww2iQOA', url: 'https://llm.alem.ai/v1/embeddings' }
+};
+
+// SUBJECTS
+const SUBJECTS = [
+  { id:'math', emoji:'📐', name:{ru:'Математика', kz:'Математика', en:'Mathematics'} },
+  { id:'history', emoji:'📜', name:{ru:'История Казахстана', kz:'Қазақстан тарихы', en:'Kazakhstan History'} },
+  { id:'biology', emoji:'🧬', name:{ru:'Биология', kz:'Биология', en:'Biology'} },
+  { id:'chemistry', emoji:'⚗️', name:{ru:'Химия', kz:'Химия', en:'Chemistry'} },
+  { id:'physics', emoji:'⚛️', name:{ru:'Физика', kz:'Физика', en:'Physics'} },
+  { id:'geography', emoji:'🌍', name:{ru:'География', kz:'География', en:'Geography'} },
+  { id:'kazakh', emoji:'🇰🇿', name:{ru:'Казахский язык', kz:'Қазақ тілі', en:'Kazakh Language'} },
+  { id:'literature', emoji:'📚', name:{ru:'Литература', kz:'Әдебиет', en:'Literature'} }
+];
+
+// =================== LANG ===================
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['kz','ru','en'][i] === lang);
+  });
+  applyTranslations();
+  renderSubjectSelector();
+  // If test is active, re-render the current question
+  if (document.getElementById('test-active').style.display === 'block') {
+    renderQuestion();
+  }
+}
+
+function applyTranslations() {
+  const t = I18N[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+}
+
+// =================== SUBJECT SELECTOR ===================
+function renderSubjectSelector() {
+  const container = document.getElementById('subject-selector');
+  if (!container) return;
+  container.innerHTML = SUBJECTS.map(s => `
+    <div class="subject-item" onclick="toggleSubject('${s.id}')">
+      <span class="subject-item-emoji">${s.emoji}</span>
+      <span class="subject-item-name">${s.name[currentLang]}</span>
+      <span class="subject-item-count">${(QUESTIONS_DB[s.id]||[]).length}</span>
+    </div>
+  `).join('');
+}
+
+let selectedSubjects = [];
+function toggleSubject(id) {
+  const el = event.target.closest('.subject-item');
+  if (selectedSubjects.includes(id)) {
+    selectedSubjects = selectedSubjects.filter(x => x !== id);
+    el.classList.remove('active');
+  } else {
+    selectedSubjects.push(id);
+    el.classList.add('active');
+  }
+}
+
+function getSelectedSubjects() {
+  return selectedSubjects;
+}
+
+// =================== TEST FUNCTIONS ===================
+function startTest() {
+  const selected = getSelectedSubjects();
+  if (selected.length === 0) { alert(I18N[currentLang].select_subjects || 'Выбери хотя бы один предмет!'); return; }
+  const count = parseInt(document.getElementById('q-count').value);
+  let pool = [];
+  selected.forEach(sid => { const qs = (QUESTIONS_DB[sid]||[]).map(q => ({...q, subject:sid})); pool = pool.concat(qs); });
+  pool.sort(() => Math.random()-0.5);
+  testQuestions = pool.slice(0, Math.min(count, pool.length));
+  currentQIndex = 0; correctCount = 0; wrongCount = 0; skipCount = 0; answered = false;
+  document.getElementById('test-setup').style.display = 'none';
+  document.getElementById('test-active').style.display = 'block';
+  document.getElementById('test-results').style.display = 'none';
+  timeLeft = Math.min(count * 120, 2400);
+  if (testTimer) clearInterval(testTimer);
+  testTimer = setInterval(() => { timeLeft--; updateTimerDisplay(); if (timeLeft <= 0) finishTest(); }, 1000);
+  renderQuestion();
+}
+
+function updateTimerDisplay() { 
+  const timerEl = document.getElementById('test-timer');
+  if (!timerEl) return;
+  const mins = Math.floor(timeLeft/60).toString().padStart(2,'0'); 
+  const secs = (timeLeft%60).toString().padStart(2,'0'); 
+  timerEl.textContent = `${mins}:${secs}`; 
+  timerEl.classList.toggle('warning', timeLeft < 120); 
+}
+
+function renderQuestion() {
+  if (currentQIndex >= testQuestions.length) { finishTest(); return; }
+  const q = testQuestions[currentQIndex];
+  const s = SUBJECTS.find(x=>x.id===q.subject);
+  answered = false;
+  document.getElementById('explanation-box').classList.remove('show');
+  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('skip-btn').style.display = 'inline-flex';
+  document.getElementById('test-counter').textContent = `${I18N[currentLang].question || 'Вопрос'} ${currentQIndex+1} / ${testQuestions.length}`;
+  const pct = (currentQIndex/testQuestions.length*100).toFixed(0);
+  document.getElementById('test-progress').style.width = pct+'%';
+  document.getElementById('q-subject-tag').innerHTML = `${s.emoji} ${s.name[currentLang]}`;
+  document.getElementById('question-text').textContent = q.q[currentLang];
+  const letters = ['A','B','C','D','E'];
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = q.opts.map((opt,i) => `<button class="option-btn" onclick="selectAnswer(this,${i})"><span class="option-letter">${letters[i]}</span>${opt[currentLang]}</button>`).join('');
+}
+
+function selectAnswer(el, idx) {
+  if (answered) return;
+  answered = true;
+  const q = testQuestions[currentQIndex];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn,i) => { if (i === q.ans) btn.classList.add('correct'); else if (i === idx) btn.classList.add('wrong'); btn.style.pointerEvents = 'none'; });
+  if (idx === q.ans) correctCount++; else wrongCount++;
+  document.getElementById('explanation-text').textContent = q.exp[currentLang];
+  document.getElementById('explanation-box').classList.add('show');
+  document.getElementById('next-btn').style.display = 'inline-flex';
+  document.getElementById('skip-btn').style.display = 'none';
+}
+
+function skipQuestion() { skipCount++; nextQuestion(); }
+function nextQuestion() { currentQIndex++; if (currentQIndex >= testQuestions.length) finishTest(); else renderQuestion(); }
+
+function finishTest() {
+  if (testTimer) { clearInterval(testTimer); testTimer = null; }
+  const total = testQuestions.length;
+  const pct = total > 0 ? Math.round(correctCount/total*100) : 0;
+  document.getElementById('test-active').style.display = 'none';
+  document.getElementById('test-results').style.display = 'block';
+  document.getElementById('result-score').textContent = correctCount;
+  document.getElementById('result-total').textContent = `из ${total}`;
+  document.getElementById('r-correct').textContent = correctCount;
+  document.getElementById('r-wrong').textContent = wrongCount;
+  document.getElementById('r-skip').textContent = skipCount;
+  const circle = document.getElementById('result-circle');
+  circle.style.setProperty('--pct', pct+'%');
+  let grade, msg;
+  if (pct >= 90) { grade = I18N[currentLang].excellent || '🏆 Отлично!'; msg = I18N[currentLang].great_result || 'Блестящий результат!'; }
+  else if (pct >= 75) { grade = I18N[currentLang].good || '⭐ Хорошо!'; msg = I18N[currentLang].good_prep || 'Отличная подготовка!'; }
+  else if (pct >= 60) { grade = I18N[currentLang].not_bad || '📈 Неплохо'; msg = I18N[currentLang].improve || 'Хороший результат, но есть что улучшить.'; }
+  else if (pct >= 40) { grade = I18N[currentLang].study || '📚 Учись!'; msg = I18N[currentLang].more_practice || 'Нужно больше практики.'; }
+  else { grade = I18N[currentLang].dont_give_up || '💪 Не сдавайся!'; msg = I18N[currentLang].start_basics || 'Начни с основ.'; }
+  document.getElementById('result-grade').textContent = grade;
+  document.getElementById('result-message').textContent = msg;
+  const entry = { date: new Date().toLocaleDateString('ru-RU'), subjects: [...new Set(testQuestions.map(q=>q.subject))], correct: correctCount, total, pct, grade };
+  testHistory.unshift(entry);
+  if (testHistory.length > 20) testHistory = testHistory.slice(0,20);
+  localStorage.setItem('testHistory', JSON.stringify(testHistory));
+  document.getElementById('test-setup').style.display = 'block';
+}
+
+// =================== INIT ===================
+window.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+  renderSubjectSelector();
+});
+</script>
+</body>
+</html>
