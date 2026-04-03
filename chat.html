@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>БілімАI — Репетитор</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1628;
+  --bg3: #141d35;
+  --surface: #1a2444;
+  --surface2: #1f2b50;
+  --border: rgba(99,179,237,0.15);
+  --accent: #4f9cf9;
+  --accent2: #7b5cf9;
+  --accent3: #f97b4f;
+  --gold: #f5c842;
+  --green: #3ecf8e;
+  --red: #f96060;
+  --text: #e8eeff;
+  --text2: #8da0c4;
+  --text3: #4d6080;
+  --r: 16px;
+  --r2: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: 'Onest', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+/* GRID BG */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(79,156,249,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,156,249,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(1200px, calc(100% - 24px));
+  z-index:100;
+  padding: 0 1rem;
+  height: 62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background: rgba(10,14,26,0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+
+.logo span {
+  background: linear-gradient(135deg, var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.header-right {
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+}
+
+/* LANGUAGE SWITCHER */
+.lang-switcher {
+  display:flex;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  gap: 2px;
+}
+
+.lang-btn {
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.lang-dropdown {
+  position: relative;
+  display: none;
+}
+
+.lang-current {
+  min-width: 72px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 92px;
+  padding: 6px;
+  border-radius: 12px;
+  background: rgba(10,14,26,0.98);
+  border: 1px solid var(--border);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 120;
+}
+
+.lang-option {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.lang-option.active {
+  background: rgba(79,156,249,0.15);
+  border-color: rgba(79,156,249,0.35);
+  color: var(--text);
+}
+
+.nav-links {
+  display:flex;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: 'Onest', sans-serif;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* PAGES */
+.page { display:none; position:relative; z-index:1; }
+.page.active { display:block; }
+
+/* =================== CHAT PAGE =================== */
+#page-chat {
+  min-height: 100vh;
+  padding-top: 72px;
+  display:flex;
+}
+
+.chat-sidebar {
+  width: 300px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.chat-sidebar h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 860px) {
+  #page-chat { display:block; }
+  .chat-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem;
+    max-height: 190px;
+    min-height: 130px;
+  }
+  .chat-sidebar h3 {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .chat-sidebar .subject-list {
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax(120px, 1fr) );
+    gap: 0.35rem;
+    max-height: 130px;
+    overflow-y: auto;
+    padding-bottom: 0.2rem;
+  }
+  .subject-item {
+    background: var(--bg2);
+    border: 1px solid rgba(99,179,237,0.15);
+    border-radius: 12px;
+    padding: 0.5rem 0.55rem;
+    gap: 0.5rem;
+    justify-content: center;
+    min-height: 34px;
+    font-size: 0.78rem;
+    line-height: 1.15;
+  }
+  .subject-item .subject-item-count { display: none; }
+  .chat-main {
+    width: 100%;
+    padding: 0.8rem;
+  }
+  .chat-header {
+    padding: 0.8rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .chat-subject-emoji { font-size: 1.5rem; }
+  .chat-subject-name { font-size: 1.05rem; }
+  .chat-messages {
+    padding: 0.8rem;
+    max-height: calc(100vh - 320px);
+  }
+  .chat-input-area {
+    padding: 0.6rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+  .chat-input { min-height: 60px; font-size: 0.95rem; }
+  .btn-send { width: 100%; padding: 0.75rem; font-size: 0.95rem; }
+
+  @media (max-width: 600px) {
+    body { font-size: 14px; }
+    .chat-sidebar { padding: 0.4rem; max-height: 150px; }
+    .chat-sidebar h3 { font-size: 0.88rem; }
+    .chat-sidebar .subject-list { grid-template-columns: repeat( auto-fill, minmax(100px, 1fr) ); gap: 0.3rem; }
+    .subject-item { padding: 0.45rem 0.5rem; font-size: 0.72rem; min-height: 32px; }
+    .chat-header { padding: 0.6rem; gap: 0.4rem; }
+    .chat-subject-emoji { font-size: 1.2rem; }
+    .chat-subject-name { font-size: 1rem; }
+    .chat-messages { padding: 0.6rem; max-height: calc(100vh - 300px); }
+    .message { max-width: 100%; }
+    .message .content { padding: 0.85rem 1rem; font-size: 0.9rem; }
+    .chat-input { min-height: 55px; font-size: 0.95rem; }
+  }
+}
+
+.subject-list {
+  display:flex;
+  flex-direction:column;
+  gap: 0.5rem;
+}
+
+.subject-item {
+  display:flex;
+  align-items:center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.subject-item:hover {
+  background: var(--bg2);
+}
+
+.subject-item.active {
+  background: rgba(79,156,249,0.1);
+  border: 1px solid rgba(79,156,249,0.3);
+}
+
+.subject-item-emoji {
+  font-size: 1.2rem;
+}
+
+.subject-item-name {
+  font-weight: 500;
+}
+
+.subject-item-count {
+  margin-left:auto;
+  color: var(--text2);
+  font-size: 0.8rem;
+}
+
+.chat-main {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.chat-subject-emoji {
+  font-size: 2rem;
+}
+
+.chat-subject-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.chat-messages {
+  flex:1;
+  padding: 2rem;
+  overflow-y: auto;
+  display:flex;
+  flex-direction:column;
+  gap: 1.5rem;
+}
+
+.message {
+  display:flex;
+  gap: 1rem;
+  max-width: 80%;
+}
+
+.message.user {
+  align-self:flex-end;
+  flex-direction:row-reverse;
+}
+
+.message .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 1.2rem;
+  flex-shrink:0;
+}
+
+.message.ai .avatar {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+
+.message.user .avatar {
+  background: linear-gradient(135deg, var(--accent2), var(--accent3));
+}
+
+.message .content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1rem 1.5rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message.user .content {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.chat-input-area {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+  display:flex;
+  gap: 1rem;
+  align-items:flex-end;
+}
+
+.chat-input {
+  flex:1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.5rem;
+  color: var(--text);
+  font-family: 'Onest', sans-serif;
+  font-size: 1rem;
+  resize: none;
+  min-height: 50px;
+  max-height: 150px;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-send {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  cursor: pointer;
+  font-family: 'Onest', sans-serif;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-send:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(79,156,249,0.35);
+}
+
+/* =================== МОБИЛЬНАЯ АДАПТАЦИЯ ДЛЯ HEADER =================== */
+@media (max-width: 1100px) {
+  header {
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    padding: 0 0.75rem;
+    height: 60px;
+    gap: 0.75rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    background: rgba(10,14,26,0.96);
+  }
+
+  .logo {
+    font-size: 1.15rem;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.9rem;
+    background: rgba(10,14,26,0.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 99;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+
+  .lang-switcher {
+    display: none;
+  }
+
+  .lang-dropdown {
+    display: block;
+  }
+
+  body.menu-open .nav-links {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  body.lang-open .lang-menu {
+    display: flex;
+  }
+}
+
+/* SCROLLBAR GLOBAL */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER - полная копия из index.html -->
+<header>
+  <a class="logo" href="#" onclick="window.location.href='index.html'; return false;">БілімA<span>I</span></a>
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation" onclick="toggleMobileMenu()">☰</button>
+  <nav class="nav-links">
+    <a href="#" onclick="window.location.href='index.html'; return false;" class="nav-link" id="nav-home"><span data-i18n="nav_home">Главная</span></a>
+    <a href="chat.html" class="nav-link active" id="nav-chat"><span data-i18n="nav_chat">Репетитор</span></a>
+    <a href="test.html" class="nav-link" id="nav-test"><span data-i18n="nav_test">Тест ЕНТ</span></a>
+    <a href="progress.html" class="nav-link" id="nav-progress"><span data-i18n="nav_progress">Прогресс</span></a>
+  </nav>
+  <div class="header-right">
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="setLang('kz')">ҚАЗ</button>
+      <button class="lang-btn active" onclick="setLang('ru')">РУС</button>
+      <button class="lang-btn" onclick="setLang('en')">ENG</button>
+    </div>
+    <div class="lang-dropdown">
+      <button class="lang-current" type="button" onclick="toggleLangMenu()">РУС</button>
+      <div class="lang-menu">
+        <button class="lang-option" data-lang="kz" type="button" onclick="setLang('kz')">ҚАЗ</button>
+        <button class="lang-option active" data-lang="ru" type="button" onclick="setLang('ru')">РУС</button>
+        <button class="lang-option" data-lang="en" type="button" onclick="setLang('en')">ENG</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="page-chat" class="page active">
+  <div class="chat-sidebar">
+    <h3 data-i18n="sidebar_subjects">Предметы</h3>
+    <div class="subject-list" id="subject-list"></div>
+  </div>
+  <div class="chat-main">
+    <div class="chat-header">
+      <span class="chat-subject-emoji" id="chat-subject-emoji">📐</span>
+      <span class="chat-subject-name" id="chat-subject-name">Математика</span>
+    </div>
+    <div class="chat-messages" id="messages-container"></div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chat-input" placeholder="Задай вопрос по предмету..." data-i18n="chat_placeholder"></textarea>
+      <button class="btn-send" onclick="sendMessage()">Отправить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const I18N = {
+  ru: {
+    nav_home:'Главная', nav_chat:'Репетитор', nav_test:'Тест ЕНТ', nav_progress:'Прогресс',
+    sidebar_subjects:'Предметы',
+    chat_welcome:'Привет! 👋 Я БілімAI — твой AI-репетитор для подготовки к ЕНТ. Я использую KazLLM и Embedder от alem.plus. Задай любой вопрос по предмету — объясню понятно!',
+    chat_placeholder:'Задай вопрос по предмету...',
+  },
+  kz: {
+    nav_home:'Басты бет', nav_chat:'Репетитор', nav_test:'ҰБТ тесті', nav_progress:'Прогресс',
+    sidebar_subjects:'Пәндер',
+    chat_welcome:'Сәлем! 👋 Мен БілімAI — ҰБТ-ға дайындалуға арналған AI-репетиторыңмын. Мен KazLLM және Embedder-ді alem.plus-тан қолданамын. Кез келген пән бойынша сұрақ қой — түсінікті түсіндіремін!',
+    chat_placeholder:'Пән бойынша сұрақ қой...',
+  },
+  en: {
+    nav_home:'Home', nav_chat:'Tutor', nav_test:'ENT Test', nav_progress:'Progress',
+    sidebar_subjects:'Subjects',
+    chat_welcome:'Hello! 👋 I\'m БілімAI — your AI tutor for ENT preparation. I use KazLLM and Embedder from alem.plus. Ask any question on a subject — I\'ll explain clearly!',
+    chat_placeholder:'Ask a question on the subject...',
+  }
+};
+
+for (let lang of ['kz','en']) {
+  for (let key in I18N.ru) {
+    if (!I18N[lang][key]) I18N[lang][key] = I18N.ru[key];
+  }
+}
+
+const SUBJECTS = [
+  { id:'math', emoji:'📐', name:{ru:'Математика', kz:'Математика', en:'Mathematics'} },
+  { id:'history', emoji:'📜', name:{ru:'История Казахстана', kz:'Қазақстан тарихы', en:'Kazakhstan History'} },
+  { id:'biology', emoji:'🧬', name:{ru:'Биология', kz:'Биология', en:'Biology'} },
+  { id:'chemistry', emoji:'⚗️', name:{ru:'Химия', kz:'Химия', en:'Chemistry'} },
+  { id:'physics', emoji:'⚛️', name:{ru:'Физика', kz:'Физика', en:'Physics'} },
+  { id:'geography', emoji:'🌍', name:{ru:'География', kz:'География', en:'Geography'} },
+  { id:'kazakh', emoji:'🇰🇿', name:{ru:'Казахский язык', kz:'Қазақ тілі', en:'Kazakh Language'} },
+  { id:'literature', emoji:'📚', name:{ru:'Литература', kz:'Әдебиет', en:'Literature'} }
+];
+
+const QUESTIONS_DB = {
+  math: [{}],
+  history: [{}],
+  biology: [{}],
+  chemistry: [{}],
+  physics: [{}],
+  geography: [{}],
+  kazakh: [{}],
+  literature: [{}]
+};
+
+let currentLang = 'ru';
+let currentSubject = 'math';
+
+const storedSubject = localStorage.getItem('selectedSubject');
+if (storedSubject) {
+  currentSubject = storedSubject;
+  localStorage.removeItem('selectedSubject');
+}
+
+let chatSessionCount = parseInt(localStorage.getItem('chatSessions') || '0');
+let isSending = false;
+
+const ALEM_API = {
+  alemllm: { key: 'sk-O1GwtY734qQtiZw9YlRVCQ', url: 'https://llm.alem.ai/v1/chat/completions', model: 'alemllm' },
+  kazllm: { key: 'sk-r-OVjlrI_QRGBC8BW9tKvw', url: 'https://llm.alem.ai/v1/chat/completions', model: 'kazllm' }
+};
+
+const defaultWelcome = {
+  ru: 'Привет! 👋 Я БілімAI — твой AI-репетитор для подготовки к ЕНТ. Задай любой вопрос по предмету — объясню понятно!',
+  kz: 'Сәлем! 👋 Мен БілімAI — ҰБТ-ға дайындалуға арналған AI-репетиторыңмын. Кез келген пән бойынша сұрақ қой — түсінікті түсіндіремін!',
+  en: 'Hello! 👋 I’m БілімAI — your AI tutor for ENT preparation. Ask any subject question and I’ll explain clearly!'
+};
+
+let subjectChats = JSON.parse(localStorage.getItem('subjectChats') || '{}');
+
+function ensureSubjectChat(subjectId) {
+  if (!subjectChats[subjectId]) {
+    subjectChats[subjectId] = [
+      {
+        role: 'ai',
+        text: defaultWelcome[currentLang] || defaultWelcome.ru
+      }
+    ];
+  }
+}
+
+function saveChats() {
+  localStorage.setItem('subjectChats', JSON.stringify(subjectChats));
+}
+
+function renderMessages() {
+  const container = document.getElementById('messages-container');
+  if (!container) return;
+
+  ensureSubjectChat(currentSubject);
+  container.innerHTML = '';
+
+  subjectChats[currentSubject].forEach(msg => {
+    const div = document.createElement('div');
+    div.className = `message ${msg.role}`;
+    div.innerHTML = `
+      <div class="avatar">${msg.role === 'ai' ? '🤖' : '👤'}</div>
+      <div class="content">${escapeHtml(msg.text)}</div>
+    `;
+    container.appendChild(div);
+  });
+
+  container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+// =================== ФУНКЦИИ HEADER ===================
+function toggleMobileMenu() {
+  document.body.classList.toggle('menu-open');
+}
+
+function closeMobileMenu() {
+  document.body.classList.remove('menu-open');
+}
+
+function toggleLangMenu() {
+  document.body.classList.toggle('lang-open');
+}
+
+function closeLangMenu() {
+  document.body.classList.remove('lang-open');
+}
+
+function updateLangDropdownUI() {
+  const map = { kz: 'ҚАЗ', ru: 'РУС', en: 'ENG' };
+  const current = document.querySelector('.lang-current');
+  if (current) current.textContent = map[currentLang] || 'РУС';
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['kz','ru','en'][i] === lang);
+  });
+  applyTranslations();
+  renderSubjectList();
+  updateChatSubjectHeader();
+
+  ensureSubjectChat(currentSubject);
+  const firstMessage = subjectChats[currentSubject]?.[0];
+  if (firstMessage && firstMessage.role === 'ai') {
+    firstMessage.text = defaultWelcome[currentLang] || defaultWelcome.ru;
+    saveChats();
+  }
+
+  renderMessages();
+  updateLangDropdownUI();
+  closeLangMenu();
+}
+
+function applyTranslations() {
+  const t = I18N[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  const inp = document.getElementById('chat-input');
+  if (inp) inp.placeholder = t.chat_placeholder || '';
+}
+
+function renderSubjectList() {
+  const list = document.getElementById('subject-list');
+  if (!list) return;
+
+  list.innerHTML = SUBJECTS.map(s => `
+    <div class="subject-item ${s.id === currentSubject ? 'active' : ''}" onclick="selectSubject('${s.id}')">
+      <span class="subject-item-emoji">${s.emoji}</span>
+      <span class="subject-item-name">${s.name[currentLang]}</span>
+      <span class="subject-item-count">${(QUESTIONS_DB[s.id] || []).length}</span>
+    </div>
+  `).join('');
+}
+
+function selectSubject(id) {
+  currentSubject = id;
+  ensureSubjectChat(currentSubject);
+  renderSubjectList();
+  updateChatSubjectHeader();
+  renderMessages();
+}
+
+function updateChatSubjectHeader() {
+  const s = SUBJECTS.find(x => x.id === currentSubject);
+  if (!s) return;
+  const emojiEl = document.getElementById('chat-subject-emoji');
+  const nameEl = document.getElementById('chat-subject-name');
+  if (emojiEl) emojiEl.textContent = s.emoji;
+  if (nameEl) nameEl.textContent = s.name[currentLang];
+}
+
+function addMessage(role, text) {
+  ensureSubjectChat(currentSubject);
+  subjectChats[currentSubject].push({ role, text });
+  saveChats();
+  renderMessages();
+}
+
+function removeLastMessageIfTyping() {
+  ensureSubjectChat(currentSubject);
+  const chat = subjectChats[currentSubject];
+  const last = chat[chat.length - 1];
+  if (last && last.role === 'ai' && last.text === '⏳ Печатает...') {
+    chat.pop();
+    saveChats();
+    renderMessages();
+  }
+}
+
+function getLocalAiAnswer() {
+  const base = {
+    math: 'Для математики: попробуй решить задачу по шагам, выпиши формулы и проверь результат.',
+    history: 'По истории: укажи год, событие и ключевых личностей.',
+    biology: 'По биологии: рассмотри строение, функции и взаимосвязи.',
+    chemistry: 'По химии: определи реакцию, условия и продукты.',
+    physics: 'По физике: определи закон, формулы и примерный расчёт.',
+    geography: 'По географии: опиши регион, климат и экономику.',
+    kazakh: 'По казахскому: проверь грамматику и смысл.',
+    literature: 'По литературе: проанализируй тему, стиль и образ.'
+  };
+  return base[currentSubject] || 'Пока нет данных по этому предмету.';
+}
+
+async function sendMessage() {
+  if (isSending) return;
+
+  const input = document.getElementById('chat-input');
+  if (!input) return;
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  isSending = true;
+  input.value = '';
+
+  addMessage('user', text);
+
+  const subject = SUBJECTS.find(s => s.id === currentSubject);
+  const subjectName = subject ? subject.name[currentLang] : '';
+
+  const systemPrompt = `Ты БілімAI — AI-репетитор для подготовки к ЕНТ. Текущий предмет: ${subjectName}. Отвечай понятно, кратко и с примерами.`;
+
+  const api = currentLang === 'kz' ? ALEM_API.kazllm : ALEM_API.alemllm;
+
+  ensureSubjectChat(currentSubject);
+
+  const historyMessages = subjectChats[currentSubject]
+    .filter(m => m.text !== '⏳ Печатает...')
+    .slice(-10)
+    .map(m => ({
+      role: m.role === 'ai' ? 'assistant' : 'user',
+      content: m.text
+    }));
+
+  const messagesPayload = [
+    { role: 'system', content: systemPrompt },
+    ...historyMessages
+  ];
+
+  addMessage('ai', '⏳ Печатает...');
+
+  try {
+    if (!api.key || api.key.includes('PASTE_YOUR')) {
+      removeLastMessageIfTyping();
+      addMessage('ai', `🔧 API ключ не вставлен. Локальная подсказка: ${getLocalAiAnswer(text)}`);
+      isSending = false;
+      return;
+    }
+
+    const response = await fetch(api.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${api.key}`
+      },
+      body: JSON.stringify({
+        model: api.model,
+        messages: messagesPayload,
+        max_tokens: 800,
+        temperature: 0.7
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API ERROR:', response.status, errorText);
+      throw new Error(`API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('API RESPONSE:', data);
+
+    let reply = '';
+
+    if (data.choices && data.choices[0]?.message?.content) {
+      reply = data.choices[0].message.content;
+    } else if (data.content && data.content[0]?.text) {
+      reply = data.content[0].text;
+    } else if (data.message) {
+      reply = data.message;
+    } else {
+      reply = '⚠️ Непонятный ответ от сервера';
+      console.error('UNKNOWN FORMAT:', data);
+    }
+
+    removeLastMessageIfTyping();
+    addMessage('ai', reply);
+
+    chatSessionCount++;
+    localStorage.setItem('chatSessions', chatSessionCount);
+
+  } catch (err) {
+    console.error('SEND ERROR:', err);
+    removeLastMessageIfTyping();
+    addMessage('ai', `❌ Ошибка: ${err.message}`);
+  } finally {
+    isSending = false;
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  ensureSubjectChat(currentSubject);
+  applyTranslations();
+  renderSubjectList();
+  updateChatSubjectHeader();
+  renderMessages();
+  updateLangDropdownUI();
+
+  const input = document.getElementById('chat-input');
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+
+  // Закрытие меню при клике вне
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.lang-dropdown')) closeLangMenu();
+  });
+});
+</script>
+</body>
+</html>

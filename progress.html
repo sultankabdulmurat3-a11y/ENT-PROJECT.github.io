@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>БілімАI — Прогресс</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;800&family=Onest:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg2: #0f1628;
+  --bg3: #141d35;
+  --surface: #1a2444;
+  --surface2: #1f2b50;
+  --border: rgba(99,179,237,0.15);
+  --accent: #4f9cf9;
+  --accent2: #7b5cf9;
+  --accent3: #f97b4f;
+  --gold: #f5c842;
+  --green: #3ecf8e;
+  --red: #f96060;
+  --text: #e8eeff;
+  --text2: #8da0c4;
+  --text3: #4d6080;
+  --r: 16px;
+  --r2: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: 'Onest', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* NOISE OVERLAY */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:0;
+  opacity:.4;
+}
+
+/* GRID BG */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(79,156,249,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,156,249,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* HEADER */
+header {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(1200px, calc(100% - 24px));
+  z-index:100;
+  padding: 0 1rem;
+  height: 62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background: rgba(10,14,26,0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+}
+
+.logo span {
+  background: linear-gradient(135deg, var(--accent2), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.header-right {
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+}
+
+/* LANGUAGE SWITCHER */
+.lang-switcher {
+  display:flex;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  gap: 2px;
+}
+
+.lang-btn {
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.lang-dropdown {
+  position: relative;
+  display: none;
+}
+
+.lang-current {
+  min-width: 72px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 92px;
+  padding: 6px;
+  border-radius: 12px;
+  background: rgba(10,14,26,0.98);
+  border: 1px solid var(--border);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 120;
+}
+
+.lang-option {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.lang-option.active {
+  background: rgba(79,156,249,0.15);
+  border-color: rgba(79,156,249,0.35);
+  color: var(--text);
+}
+
+.nav-links {
+  display:flex;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  padding: 8px 16px;
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  transition: all 0.2s;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: 'Onest', sans-serif;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--text);
+  background: var(--surface);
+}
+
+/* PAGES */
+.page { display:none; position:relative; z-index:1; }
+.page.active { display:block; }
+
+/* =================== PROGRESS PAGE =================== */
+#page-progress {
+  min-height: 100vh;
+  padding-top: 72px;
+}
+
+.progress-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.progress-header {
+  text-align:center;
+  margin-bottom: 3rem;
+}
+
+.progress-header h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+}
+
+.progress-header p {
+  color: var(--text2);
+  font-size: 1.1rem;
+}
+
+/* STATS CARDS */
+.stats-cards {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 2rem;
+  text-align:center;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 2rem;
+  margin: 0 auto 1rem;
+  background: rgba(79,156,249,0.1);
+}
+
+.stat-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display:block;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* PROGRESS BY SUBJECT */
+.progress-by-subject {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.progress-by-subject h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.subject-progress-list {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.subject-progress-item {
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: all 0.3s;
+}
+
+.subject-progress-item:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.subject-progress-emoji {
+  font-size: 1.5rem;
+}
+
+.subject-progress-info {
+  flex:1;
+}
+
+.subject-progress-name {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.subject-progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.subject-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.subject-progress-pct {
+  font-size: 0.8rem;
+  color: var(--text2);
+}
+
+/* TEST HISTORY */
+.test-history-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 2rem;
+}
+
+.test-history-section h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.test-history-list {
+  display:flex;
+  flex-direction:column;
+  gap: 1rem;
+}
+
+.history-item {
+  display:flex;
+  align-items:center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  transition: all 0.3s;
+}
+
+.history-item:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.history-emoji {
+  font-size: 1.5rem;
+}
+
+.history-info {
+  flex:1;
+}
+
+.history-name {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.history-date {
+  font-size: 0.8rem;
+  color: var(--text2);
+}
+
+.history-score {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  min-width: 60px;
+  text-align:center;
+}
+
+.history-score.good { background: rgba(62,207,142,0.2); color: var(--green); }
+.history-score.mid { background: rgba(245,200,66,0.2); color: var(--gold); }
+.history-score.low { background: rgba(249,96,96,0.2); color: var(--red); }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align:center;
+  padding: 3rem 2rem;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: var(--text2);
+}
+
+@media (max-width: 1100px) {
+  header {
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    padding: 0 0.75rem;
+    height: 60px;
+    gap: 0.75rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    background: rgba(10,14,26,0.96);
+  }
+
+  #page-progress {
+    padding-top: 60px;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.9rem;
+    background: rgba(10,14,26,0.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 99;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+
+  .lang-switcher {
+    display: none;
+  }
+
+  .lang-dropdown {
+    display: block;
+  }
+
+  .progress-container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0.8rem 12px;
+  }
+
+  .progress-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-header h2 {
+    font-size: 1.8rem;
+  }
+
+  .stats-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.2rem 0.8rem;
+    border-radius: 18px;
+  }
+
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+    border-radius: 12px;
+  }
+
+  .stat-num {
+    font-size: 1.8rem;
+  }
+
+  .progress-by-subject,
+  .test-history-section {
+    padding: 1rem;
+    border-radius: 18px;
+  }
+
+  .history-item {
+    padding: 0.8rem;
+    gap: 0.7rem;
+  }
+
+  .history-name {
+    font-size: 0.9rem;
+  }
+
+  body.menu-open .nav-links {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  body.lang-open .lang-menu {
+    display: flex;
+  }
+}
+
+@media (max-width: 560px) {
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .subject-progress-item {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .subject-progress-pct {
+    width: 100%;
+    text-align: left;
+    margin-left: 2.2rem;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#" onclick="window.location.href='index.html'; return false;">БілімA<span>I</span></a>
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation" onclick="toggleMobileMenu()">☰</button>
+  <nav class="nav-links">
+    <a href="#" onclick="window.location.href='index.html'; return false;" class="nav-link" id="nav-home"><span data-i18n="nav_home">Главная</span></a>
+    <a href="chat.html" class="nav-link" id="nav-chat"><span data-i18n="nav_chat">Репетитор</span></a>
+    <a href="test.html" class="nav-link" id="nav-test"><span data-i18n="nav_test">Тест ЕНТ</span></a>
+    <a href="progress.html" class="nav-link active" id="nav-progress"><span data-i18n="nav_progress">Прогресс</span></a>
+  </nav>
+  <div class="header-right">
+    <div class="lang-switcher">
+      <button class="lang-btn" onclick="setLang('kz')">ҚАЗ</button>
+      <button class="lang-btn active" onclick="setLang('ru')">РУС</button>
+      <button class="lang-btn" onclick="setLang('en')">ENG</button>
+    </div>
+    <div class="lang-dropdown">
+      <button class="lang-current" type="button" onclick="toggleLangMenu()">РУС</button>
+      <div class="lang-menu">
+        <button class="lang-option" data-lang="kz" type="button" onclick="setLang('kz')">ҚАЗ</button>
+        <button class="lang-option active" data-lang="ru" type="button" onclick="setLang('ru')">РУС</button>
+        <button class="lang-option" data-lang="en" type="button" onclick="setLang('en')">ENG</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="page-progress" class="page active">
+  <div class="progress-container">
+    <div class="progress-header">
+      <h2 data-i18n="progress_title">📊 Мой прогресс</h2>
+      <p data-i18n="progress_sub" style="color:var(--text2)">Твоя статистика и динамика обучения</p>
+    </div>
+
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div class="stat-icon">📝</div>
+        <span class="stat-num" id="total-tests">0</span>
+        <div class="stat-label" data-i18n="stat_tests">Тестов пройдено</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <span class="stat-num" id="avg-score">0%</span>
+        <div class="stat-label" data-i18n="stat_avg">Средний балл</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">❓</div>
+        <span class="stat-num" id="total-questions">0</span>
+        <div class="stat-label" data-i18n="stat_answered">Вопросов отвечено</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💬</div>
+        <span class="stat-num" id="chat-sessions">0</span>
+        <div class="stat-label" data-i18n="stat_sessions">Сессий с репетитором</div>
+      </div>
+    </div>
+
+    <div class="progress-by-subject">
+      <h3 data-i18n="progress_by_subject">Прогресс по предметам</h3>
+      <div class="subject-progress-list" id="subject-progress-list">
+        <!-- Subject progress items will be rendered here -->
+      </div>
+    </div>
+
+    <div class="test-history-section">
+      <h3 data-i18n="progress_history">История тестов</h3>
+      <div class="test-history-list" id="test-history">
+        <!-- History items will be rendered here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// I18N translations
+const I18N = {
+  ru: {
+    nav_home:'Главная', nav_chat:'Репетитор', nav_test:'Тест ЕНТ', nav_progress:'Прогресс',
+    hero_line1:'Подготовься к ЕНТ', hero_line2:'с AI-репетитором',
+    hero_desc:'Персональный AI-ассистент на казахском и русском языке. Объясняет темы, проверяет знания и отслеживает твой прогресс.',
+    btn_start_chat:'Начать обучение', btn_start_test:'Пройти тест ЕНТ',
+    stat_questions:'Вопросов ЕНТ', stat_subjects:'Предметов', stat_ai:'AI модель', stat_langs:'Языка',
+    features_title:'Всё что нужно для ЕНТ', features_sub:'Используем лучшие AI-инструменты от alem.plus',
+    feat1_title:'AI-репетитор', feat1_desc:'Задавай любые вопросы по предметам. KazLLM объяснит на казахском или русском языке.',
+    feat2_title:'Тест в формате ЕНТ', feat2_desc:'Реальные вопросы ЕНТ с таймером. После теста AI объяснит каждую ошибку.',
+    feat3_title:'Голосовой ввод', feat3_desc:'Говори вопросы на казахском или русском. Speech-to-text Kazakh от alem.plus.',
+    feat4_title:'Статистика прогресса', feat4_desc:'Отслеживай прогресс по каждому предмету. Видь слабые места.',
+    feat5_title:'Умный поиск', feat5_desc:'Embedder от alem.plus находит самые релевантные объяснения из базы знаний.',
+    feat6_title:'3 языка', feat6_desc:'Интерфейс на казахском, русском и английском языке.',
+    subjects_title:'Предметы', subjects_sub:'Все предметы ЕНТ в одном месте',
+    subj_math:'Математика', subj_history:'История Казахстана', subj_kazakh:'Казахский язык',
+    subj_biology:'Биология', subj_chemistry:'Химия', subj_physics:'Физика',
+    subj_geography:'География', subj_literature:'Литература',
+    sidebar_subjects:'Предметы',
+    test_title:'🎯 Тест в формате ЕНТ', test_sub:'Выбери предметы и начни тест',
+    test_choose_subjects:'Выбери предметы', test_num_questions:'Количество вопросов',
+    btn_start:'Начать тест', btn_skip:'Пропустить', btn_next:'Следующий →',
+    r_correct:'Правильно', r_wrong:'Неправильно', r_skip:'Пропущено',
+    btn_retry:'Пройти ещё раз', btn_study_errors:'Разобрать ошибки с AI',
+    progress_title:'📊 Мой прогресс', progress_sub:'Твоя статистика и динамика обучения',
+    stat_tests:'Тестов пройдено', stat_avg:'Средний балл', stat_answered:'Вопросов отвечено', stat_sessions:'Сессий с репетитором',
+    progress_by_subject:'Прогресс по предметам', progress_history:'История тестов',
+    chat_welcome:'Привет! 👋 Я БілімAI — твой AI-репетитор для подготовки к ЕНТ. Я использую **KazLLM** и **Embedder** от alem.plus. Задай любой вопрос по предмету — объясню понятно!',
+    chat_placeholder:'Задай вопрос по предмету...',
+    voice_listening:'Слушаю... Говорите',
+    question:'Вопрос',
+    no_data:'Пока нет данных',
+    first_test:'Пройди первый тест!',
+    no_history:'Нет истории',
+    excellent:'🏆 Отлично!',
+    great_result:'Блестящий результат!',
+    good:'⭐ Хорошо!',
+    good_prep:'Отличная подготовка!',
+    not_bad:'📈 Неплохо',
+    improve:'Хороший результат, но есть что улучшить.',
+    study:'📚 Учись!',
+    more_practice:'Нужно больше практики.',
+    dont_give_up:'💪 Не сдавайся!',
+    start_basics:'Начни с основ.',
+    select_subjects:'Выбери хотя бы один предмет!',
+  },
+  kz: {
+    nav_home:'Басты бет', nav_chat:'Репетитор', nav_test:'ҰБТ тесті', nav_progress:'Прогресс',
+    hero_line1:'ҰБТ-ға дайындал', hero_line2:'AI-репетитормен',
+    hero_desc:'Қазақ және орыс тілдеріндегі жеке AI-көмекші. Тақырыптарды түсіндіреді, білімді тексереді және прогресіңді қадағалайды.',
+    btn_start_chat:'Оқуды бастау', btn_start_test:'ҰБТ тестін өту',
+    stat_questions:'ҰБТ сұрақтары', stat_subjects:'Пәндер', stat_ai:'AI модель', stat_langs:'Тіл',
+    features_title:'ҰБТ үшін қажеттінің бәрі', features_sub:'alem.plus-тан ең жақсы AI-құралдарын қолданамыз',
+    feat1_title:'AI-репетитор', feat1_desc:'Кез келген пән бойынша сұрақ қой. KazLLM қазақ немесе орыс тілінде түсіндіреді.',
+    feat2_title:'ҰБТ форматындағы тест', feat2_desc:'Таймермен шынайы ҰБТ сұрақтары. Тесттен кейін AI әр қатені түсіндіреді.',
+    feat3_title:'Дауыс енгізу', feat3_desc:'Қазақ немесе орыс тілінде сұрақ айт. alem.plus-тан Kazakh Speech-to-text.',
+    feat4_title:'Прогресс статистикасы', feat4_desc:'Әр пән бойынша прогрессті қадағала. Әлсіз жерлерді көріңіз.',
+    feat5_title:'Ақылды іздеу', feat5_desc:'alem.plus Embedder базасынан ең релевантты түсіндірмелерді табады.',
+    feat6_title:'3 тіл', feat6_desc:'Қазақ, орыс және ағылшын тілдеріндегі интерфейс.',
+    subjects_title:'Пәндер', subjects_sub:'Барлық ҰБТ пәндері бір жерде',
+    subj_math:'Математика', subj_history:'Қазақстан тарихы', subj_kazakh:'Қазақ тілі',
+    subj_biology:'Биология', subj_chemistry:'Химия', subj_physics:'Физика',
+    subj_geography:'География', subj_literature:'Әдебиет',
+    sidebar_subjects:'Пәндер',
+    test_title:'🎯 ҰБТ форматындағы тест', test_sub:'Пәндерді таңда және тестті баста',
+    test_choose_subjects:'Пәндерді таңда', test_num_questions:'Сұрақтар саны',
+    btn_start:'Тестті бастау', btn_skip:'Өткізу', btn_next:'Келесі →',
+    r_correct:'Дұрыс', r_wrong:'Қате', r_skip:'Өткізілген',
+    btn_retry:'Тағы өту', btn_study_errors:'AI-пен қателерді талқылау',
+    progress_title:'📊 Менің прогресім', progress_sub:'Сенің статистикаң және оқу динамикаң',
+    stat_tests:'Өткен тестер', stat_avg:'Орташа балл', stat_answered:'Жауап берілген сұрақтар', stat_sessions:'Репетитормен сессиялар',
+    progress_by_subject:'Пәндер бойынша прогресс', progress_history:'Тест тарихы',
+    chat_welcome:'Сәлем! 👋 Мен БілімAI — ҰБТ-ға дайындалуға арналған AI-репетиторыңмын. Мен **KazLLM** және **Embedder**-ді alem.plus-тан қолданамын. Кез келген пән бойынша сұрақ қой — түсінікті түсіндіремін!',
+    chat_placeholder:'Пән бойынша сұрақ қой...',
+    voice_listening:'Тыңдап тұрмын... Сөйлеңіз',
+    question:'Сұрақ',
+    no_data:'Әлі деректер жоқ',
+    first_test:'Бірінші тестті өтіңіз!',
+    no_history:'Тарих жоқ',
+    excellent:'🏆 Өте жақсы!',
+    great_result:'Тамаша нәтиже!',
+    good:'⭐ Жақсы!',
+    good_prep:'Тамаша дайындық!',
+    not_bad:'📈 Жаман емес',
+    improve:'Жақсы нәтиже, бірақ жақсартуға болады.',
+    study:'📚 Оқы!',
+    more_practice:'Көбірек практика қажет.',
+    dont_give_up:'💪 Бас тартпа!',
+    start_basics:'Негіздерден баста.',
+    select_subjects:'Кемінде бір пәнді таңда!',
+  },
+  en: {
+    nav_home:'Home', nav_chat:'Tutor', nav_test:'ENT Test', nav_progress:'Progress',
+    hero_line1:'Prepare for ENT', hero_line2:'with AI Tutor',
+    hero_desc:'Personal AI assistant in Kazakh and Russian. Explains topics, checks knowledge and tracks your progress.',
+    btn_start_chat:'Start Learning', btn_start_test:'Take ENT Test',
+    stat_questions:'ENT Questions', stat_subjects:'Subjects', stat_ai:'AI Model', stat_langs:'Languages',
+    features_title:'Everything for ENT', features_sub:'Using best AI tools from alem.plus',
+    feat1_title:'AI Tutor', feat1_desc:'Ask any questions on subjects. KazLLM explains in Kazakh or Russian.',
+    feat2_title:'ENT Format Test', feat2_desc:'Real ENT questions with timer. After test AI explains each mistake.',
+    feat3_title:'Voice Input', feat3_desc:'Speak questions in Kazakh or Russian. Speech-to-text Kazakh from alem.plus.',
+    feat4_title:'Progress Statistics', feat4_desc:'Track progress on each subject. See weak spots.',
+    feat5_title:'Smart Search', feat5_desc:'Embedder from alem.plus finds most relevant explanations from knowledge base.',
+    feat6_title:'3 Languages', feat6_desc:'Interface in Kazakh, Russian and English.',
+    subjects_title:'Subjects', subjects_sub:'All ENT subjects in one place',
+    subj_math:'Mathematics', subj_history:'Kazakhstan History', subj_kazakh:'Kazakh Language',
+    subj_biology:'Biology', subj_chemistry:'Chemistry', subj_physics:'Physics',
+    subj_geography:'Geography', subj_literature:'Literature',
+    sidebar_subjects:'Subjects',
+    test_title:'🎯 ENT Format Test', test_sub:'Choose subjects and start test',
+    test_choose_subjects:'Choose subjects', test_num_questions:'Number of questions',
+    btn_start:'Start Test', btn_skip:'Skip', btn_next:'Next →',
+    r_correct:'Correct', r_wrong:'Wrong', r_skip:'Skipped',
+    btn_retry:'Take Again', btn_study_errors:'Review Errors with AI',
+    progress_title:'📊 My Progress', progress_sub:'Your statistics and learning dynamics',
+    stat_tests:'Tests Taken', stat_avg:'Average Score', stat_answered:'Questions Answered', stat_sessions:'Tutor Sessions',
+    progress_by_subject:'Progress by Subject', progress_history:'Test History',
+    chat_welcome:'Hello! 👋 I\'m БілімAI — your AI tutor for ENT preparation. I use **KazLLM** and **Embedder** from alem.plus. Ask any question on a subject — I\'ll explain clearly!',
+    chat_placeholder:'Ask a question on the subject...',
+    voice_listening:'Listening... Speak',
+    question:'Question',
+    no_data:'No data yet',
+    first_test:'Take the first test!',
+    no_history:'No history',
+    excellent:'🏆 Excellent!',
+    great_result:'Brilliant result!',
+    good:'⭐ Good!',
+    good_prep:'Great preparation!',
+    not_bad:'📈 Not bad',
+    improve:'Good result, but there\'s room for improvement.',
+    study:'📚 Study!',
+    more_practice:'Need more practice.',
+    dont_give_up:'💪 Don\'t give up!',
+    start_basics:'Start with basics.',
+    select_subjects:'Choose at least one subject!',
+  }
+};
+
+// Копируем недостающие переводы для kz и en (для краткости используем ru как fallback)
+for (let lang of ['kz','en']) {
+  for (let key in I18N.ru) {
+    if (!I18N[lang][key]) I18N[lang][key] = I18N.ru[key];
+  }
+}
+
+// =================== STATE ===================
+let currentLang = 'ru';
+let testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
+let chatSessionCount = parseInt(localStorage.getItem('chatSessions') || '0');
+
+// SUBJECTS
+const SUBJECTS = [
+  { id:'math', emoji:'📐', name:{ru:'Математика', kz:'Математика', en:'Mathematics'} },
+  { id:'history', emoji:'📜', name:{ru:'История Казахстана', kz:'Қазақстан тарихы', en:'Kazakhstan History'} },
+  { id:'biology', emoji:'🧬', name:{ru:'Биология', kz:'Биология', en:'Biology'} },
+  { id:'chemistry', emoji:'⚗️', name:{ru:'Химия', kz:'Химия', en:'Chemistry'} },
+  { id:'physics', emoji:'⚛️', name:{ru:'Физика', kz:'Физика', en:'Physics'} },
+  { id:'geography', emoji:'🌍', name:{ru:'География', kz:'География', en:'Geography'} },
+  { id:'kazakh', emoji:'🇰🇿', name:{ru:'Казахский язык', kz:'Қазақ тілі', en:'Kazakh Language'} },
+  { id:'literature', emoji:'📚', name:{ru:'Литература', kz:'Әдебиет', en:'Literature'} }
+];
+
+// =================== LANG ===================
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['kz','ru','en'][i] === lang);
+  });
+  applyTranslations();
+  renderProgress();
+  updateLangDropdownUI();
+  closeLangMenu();
+}
+
+function updateLangDropdownUI() {
+  const map = { kz: 'ҚАЗ', ru: 'РУС', en: 'ENG' };
+  const current = document.querySelector('.lang-current');
+  if (current) current.textContent = map[currentLang] || 'РУС';
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+}
+
+function toggleLangMenu() {
+  document.body.classList.toggle('lang-open');
+}
+
+function closeLangMenu() {
+  document.body.classList.remove('lang-open');
+}
+
+function toggleMobileMenu() {
+  document.body.classList.toggle('menu-open');
+}
+
+function closeMobileMenu() {
+  document.body.classList.remove('menu-open');
+}
+
+function applyTranslations() {
+  const t = I18N[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+}
+
+// =================== PROGRESS FUNCTIONS ===================
+function renderProgress() {
+  const history = testHistory;
+  const totalTests = history.length;
+  const avgScore = totalTests > 0 ? Math.round(history.reduce((a,b)=>a+b.pct,0)/totalTests) : 0;
+  const totalQ = history.reduce((a,b)=>a+b.total,0);
+  const totalTestsEl = document.getElementById('total-tests');
+  const avgScoreEl = document.getElementById('avg-score');
+  const totalQuestionsEl = document.getElementById('total-questions');
+  const chatSessionsEl = document.getElementById('chat-sessions');
+  if (totalTestsEl) totalTestsEl.textContent = totalTests;
+  if (avgScoreEl) avgScoreEl.textContent = avgScore+'%';
+  if (totalQuestionsEl) totalQuestionsEl.textContent = totalQ;
+  if (chatSessionsEl) chatSessionsEl.textContent = chatSessionCount;
+  const spList = document.getElementById('subject-progress-list');
+  if (spList) {
+    if (totalTests === 0) spList.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><h3>${I18N[currentLang].no_data || 'Пока нет данных'}</h3><p>${I18N[currentLang].first_test || 'Пройди первый тест!'}</p></div>`;
+    else {
+      const subjStats = {};
+      history.forEach(h => { h.subjects.forEach(sid => { if (!subjStats[sid]) subjStats[sid] = {tests:0}; subjStats[sid].tests++; }); });
+      spList.innerHTML = SUBJECTS.map(s => { const st = subjStats[s.id]; const testCount = st ? st.tests : 0; return `<div class="subject-progress-item"><span class="subject-progress-emoji">${s.emoji}</span><div class="subject-progress-info"><div class="subject-progress-name">${s.name[currentLang]}</div><div class="subject-progress-bar-bg"><div class="subject-progress-bar-fill" style="width:${Math.min(100, testCount * 20)}%"></div></div></div><span class="subject-progress-pct">${testCount} ${I18N[currentLang].stat_tests ? I18N[currentLang].stat_tests.toLowerCase() : 'тестов'}</span></div>`; }).join('');
+    }
+  }
+  const histEl = document.getElementById('test-history');
+  if (histEl) {
+    if (history.length === 0) histEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div><h3>${I18N[currentLang].no_history || 'Нет истории'}</h3><p>${I18N[currentLang].first_test || 'Пройди первый тест!'}</p></div>`;
+    else {
+      histEl.innerHTML = history.slice(0,8).map(h => { const cls = h.pct >= 75 ? 'good' : h.pct >= 50 ? 'mid' : 'low'; const subjs = h.subjects.map(sid => SUBJECTS.find(s=>s.id===sid)?.emoji||'').join(''); return `<div class="history-item"><span class="history-emoji">${subjs||'📝'}</span><div class="history-info"><div class="history-name">${h.correct}/${h.total} правильно</div><div class="history-date">${h.date}</div></div><span class="history-score ${cls}">${h.pct}%</span></div>`; }).join('');
+    }
+  }
+}
+
+// =================== INIT ===================
+window.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+  updateLangDropdownUI();
+  renderProgress();
+
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      closeMobileMenu();
+      closeLangMenu();
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) {
+      closeMobileMenu();
+      closeLangMenu();
+    }
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeMobileMenu();
+      closeLangMenu();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.lang-dropdown')) closeLangMenu();
+  });
+});
+</script>
+</body>
+</html>
