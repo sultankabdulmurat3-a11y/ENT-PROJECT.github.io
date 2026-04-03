@@ -66,16 +66,21 @@ body::after {
 /* HEADER */
 header {
   position: fixed;
-  top:0; left:0; right:0;
+  top: 10px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(1200px, calc(100% - 24px));
   z-index:100;
-  padding: 0 2rem;
-  height: 72px;
+  padding: 0 1rem;
+  height: 62px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  background: rgba(10,14,26,0.85);
+  background: rgba(10,14,26,0.9);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
 }
 
 .logo {
@@ -94,6 +99,19 @@ header {
   background: linear-gradient(135deg, var(--accent2), var(--accent3));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .header-right {
@@ -130,6 +148,60 @@ header {
   color: #fff;
 }
 
+.lang-dropdown {
+  position: relative;
+  display: none;
+}
+
+.lang-current {
+  min-width: 72px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 92px;
+  padding: 6px;
+  border-radius: 12px;
+  background: rgba(10,14,26,0.98);
+  border: 1px solid var(--border);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 120;
+}
+
+.lang-option {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Onest', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.lang-option.active {
+  background: rgba(79,156,249,0.15);
+  border-color: rgba(79,156,249,0.35);
+  color: var(--text);
+}
+
 .nav-links {
   display:flex;
   gap: 0.5rem;
@@ -153,87 +225,6 @@ header {
   color: var(--text);
   background: var(--surface);
 }
-
-select {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  color: var(--text);
-  padding: 14px 32px;
-  font-family: 'Onest', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  padding-right: 40px;
-}
-
-select:hover { background-color: var(--surface2); border-color: var(--accent); }
-
-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,156,249,0.1); }
-
-/* BUTTON STYLES */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-width: 140px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(79,156,249,0.2);
-}
-
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(79,156,249,0.35); }
-.btn-primary:hover::before { background: rgba(255,255,255,0.08); }
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-width: 140px;
-  padding: 12px 24px;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  font-family: 'Onest', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.btn-secondary:hover { background: var(--surface2); border-color: rgba(99,179,237,0.3); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
 
 /* PAGES */
 .page { display:none; position:relative; z-index:1; }
@@ -555,11 +546,99 @@ select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,156,24
   font-size: 0.9rem;
   color: var(--text2);
 }
+
+/* =================== МОБИЛЬНАЯ АДАПТАЦИЯ ДЛЯ HEADER =================== */
+@media (max-width: 1100px) {
+  header {
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    padding: 0 0.75rem;
+    height: 60px;
+    gap: 0.75rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    background: rgba(10,14,26,0.96);
+  }
+
+  .logo {
+    font-size: 1.15rem;
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.9rem;
+    background: rgba(10,14,26,0.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 99;
+  }
+
+  .nav-link {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+  }
+
+  .header-right {
+    margin-left: auto;
+  }
+
+  .lang-switcher {
+    display: none;
+  }
+
+  .lang-dropdown {
+    display: block;
+  }
+
+  body.menu-open .nav-links {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  body.lang-open .lang-menu {
+    display: flex;
+  }
+}
+
+/* SCROLLBAR GLOBAL */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius:3px; }
 </style>
 </head>
 <body>
+
+<!-- HEADER - полная копия из index.html -->
 <header>
   <a class="logo" href="#" onclick="window.location.href='index.html'; return false;">БілімA<span>I</span></a>
+  <button class="menu-toggle" type="button" aria-label="Toggle navigation" onclick="toggleMobileMenu()">☰</button>
   <nav class="nav-links">
     <a href="#" onclick="window.location.href='index.html'; return false;" class="nav-link" id="nav-home"><span data-i18n="nav_home">Главная</span></a>
     <a href="chat.html" class="nav-link" id="nav-chat"><span data-i18n="nav_chat">Репетитор</span></a>
@@ -571,6 +650,14 @@ select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,156,24
       <button class="lang-btn" onclick="setLang('kz')">ҚАЗ</button>
       <button class="lang-btn active" onclick="setLang('ru')">РУС</button>
       <button class="lang-btn" onclick="setLang('en')">ENG</button>
+    </div>
+    <div class="lang-dropdown">
+      <button class="lang-current" type="button" onclick="toggleLangMenu()">РУС</button>
+      <div class="lang-menu">
+        <button class="lang-option" data-lang="kz" type="button" onclick="setLang('kz')">ҚАЗ</button>
+        <button class="lang-option active" data-lang="ru" type="button" onclick="setLang('ru')">РУС</button>
+        <button class="lang-option" data-lang="en" type="button" onclick="setLang('en')">ENG</button>
+      </div>
     </div>
   </div>
 </header>
@@ -598,7 +685,7 @@ select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,156,24
           </select>
         </div>
         <button class="btn-primary" onclick="startTest()" style="margin-top:auto">
-          🚀 <span data-i18n="btn_start">Начать тест</span>
+          🚀 <span class="" data-i18n="btn_start">Начать тест</span>
         </button>
       </div>
     </div>
@@ -800,14 +887,14 @@ const I18N = {
   }
 };
 
-// Копируем недостающие переводы для kz и en (для краткости используем ru как fallback)
+// Копируем недостающие переводы для kz и en
 for (let lang of ['kz','en']) {
   for (let key in I18N.ru) {
     if (!I18N[lang][key]) I18N[lang][key] = I18N.ru[key];
   }
 }
 
-// ENT QUESTIONS DATABASE (sample)
+// ENT QUESTIONS DATABASE - РАСШИРЕНА ДО 50+ ВОПРОСОВ
 const QUESTIONS_DB = {
   math: [
     { q:{ru:'Найдите значение выражения: log₂(32)', kz:'log₂(32) өрнегінің мәнін табыңыз', en:'Find the value of the expression: log₂(32)'}, opts:[{ru:'3',kz:'3',en:'3'},{ru:'4',kz:'4',en:'4'},{ru:'5',kz:'5',en:'5'},{ru:'6',kz:'6',en:'6'}], ans:2, exp:{ru:'log₂(32) = log₂(2⁵) = 5. Логарифм числа 32 по основанию 2 равен 5, так как 2⁵ = 32.', kz:'log₂(32) = log₂(2⁵) = 5. 32 санының 2 негізіндегі логарифмі 5-ке тең, өйткені 2⁵ = 32.', en:'log₂(32) = log₂(2⁵) = 5. The logarithm of 32 to base 2 is 5, since 2⁵ = 32.'} },
@@ -818,33 +905,68 @@ const QUESTIONS_DB = {
     { q:{ru:'Найдите площадь круга с радиусом 5', kz:'Радиусы 5 болатын шеңбердің ауданын табыңыз', en:'Find the area of a circle with radius 5'}, opts:[{ru:'10π',kz:'10π',en:'10π'},{ru:'15π',kz:'15π',en:'15π'},{ru:'25π',kz:'25π',en:'25π'},{ru:'50π',kz:'50π',en:'50π'}], ans:2, exp:{ru:'S = πr² = 25π.', kz:'S = πr² = 25π.', en:'S = πr² = 25π.'} },
     { q:{ru:'Сумма углов треугольника равна:', kz:'Үшбұрыш бұрыштарының қосындысы:', en:'The sum of the angles of a triangle is:'}, opts:[{ru:'90°',kz:'90°',en:'90°'},{ru:'180°',kz:'180°',en:'180°'},{ru:'270°',kz:'270°',en:'270°'},{ru:'360°',kz:'360°',en:'360°'}], ans:1, exp:{ru:'Сумма углов = 180°.', kz:'Бұрыштар қосындысы = 180°.', en:'Sum of angles = 180°.'} },
     { q:{ru:'Решите неравенство: x² - 4 > 0', kz:'Теңсіздікті шешіңіз: x² - 4 > 0', en:'Solve the inequality: x² - 4 > 0'}, opts:[{ru:'x > 2',kz:'x > 2',en:'x > 2'},{ru:'|x| < 2',kz:'|x| < 2',en:'|x| < 2'},{ru:'|x| > 2',kz:'|x| > 2',en:'|x| > 2'},{ru:'x < -2',kz:'x < -2',en:'x < -2'}], ans:2, exp:{ru:'|x| > 2', kz:'|x| > 2', en:'|x| > 2'} },
+    { q:{ru:'Найдите cos(60°)', kz:'cos(60°) табыңыз', en:'Find cos(60°)'}, opts:[{ru:'1/2',kz:'1/2',en:'1/2'},{ru:'√3/2',kz:'√3/2',en:'√3/2'},{ru:'√2/2',kz:'√2/2',en:'√2/2'},{ru:'1',kz:'1',en:'1'}], ans:0, exp:{ru:'cos(60°) = 1/2', kz:'cos(60°) = 1/2', en:'cos(60°) = 1/2'} },
+    { q:{ru:'Решите уравнение: 3x + 7 = 22', kz:'Теңдеуді шешіңіз: 3x + 7 = 22', en:'Solve the equation: 3x + 7 = 22'}, opts:[{ru:'3',kz:'3',en:'3'},{ru:'4',kz:'4',en:'4'},{ru:'5',kz:'5',en:'5'},{ru:'6',kz:'6',en:'6'}], ans:2, exp:{ru:'3x = 15, x = 5', kz:'3x = 15, x = 5', en:'3x = 15, x = 5'} },
+    { q:{ru:'Найдите производную функции f(x) = sin(x)', kz:'f(x) = sin(x) функциясының туындысын табыңыз', en:'Find the derivative of f(x) = sin(x)'}, opts:[{ru:'cos(x)',kz:'cos(x)',en:'cos(x)'},{ru:'-cos(x)',kz:'-cos(x)',en:'-cos(x)'},{ru:'sin(x)',kz:'sin(x)',en:'sin(x)'},{ru:'-sin(x)',kz:'-sin(x)',en:'-sin(x)'}], ans:0, exp:{ru:'(sin x)\' = cos x', kz:'(sin x)\' = cos x', en:'(sin x)\' = cos x'} },
+    { q:{ru:'Чему равно значение выражения 5! (факториал 5)?', kz:'5! (5 факториал) өрнегінің мәні неге тең?', en:'What is the value of 5! (factorial of 5)?'}, opts:[{ru:'60',kz:'60',en:'60'},{ru:'100',kz:'100',en:'100'},{ru:'120',kz:'120',en:'120'},{ru:'150',kz:'150',en:'150'}], ans:2, exp:{ru:'5! = 5×4×3×2×1 = 120', kz:'5! = 5×4×3×2×1 = 120', en:'5! = 5×4×3×2×1 = 120'} },
+    { q:{ru:'Решите систему: x + y = 10, x - y = 4', kz:'Жүйені шешіңіз: x + y = 10, x - y = 4', en:'Solve the system: x + y = 10, x - y = 4'}, opts:[{ru:'x=7,y=3',kz:'x=7,y=3',en:'x=7,y=3'},{ru:'x=6,y=4',kz:'x=6,y=4',en:'x=6,y=4'},{ru:'x=8,y=2',kz:'x=8,y=2',en:'x=8,y=2'},{ru:'x=5,y=5',kz:'x=5,y=5',en:'x=5,y=5'}], ans:0, exp:{ru:'Сложим уравнения: 2x=14, x=7, y=3', kz:'Теңдеулерді қосамыз: 2x=14, x=7, y=3', en:'Add equations: 2x=14, x=7, y=3'} },
+    { q:{ru:'Найдите значение выражения √144', kz:'√144 өрнегінің мәнін табыңыз', en:'Find the value of √144'}, opts:[{ru:'10',kz:'10',en:'10'},{ru:'11',kz:'11',en:'11'},{ru:'12',kz:'12',en:'12'},{ru:'13',kz:'13',en:'13'}], ans:2, exp:{ru:'12² = 144, √144 = 12', kz:'12² = 144, √144 = 12', en:'12² = 144, √144 = 12'} },
+    { q:{ru:'Сколько градусов в прямом угле?', kz:'Тік бұрыш неше градус?', en:'How many degrees in a right angle?'}, opts:[{ru:'45°',kz:'45°',en:'45°'},{ru:'60°',kz:'60°',en:'60°'},{ru:'90°',kz:'90°',en:'90°'},{ru:'180°',kz:'180°',en:'180°'}], ans:2, exp:{ru:'Прямой угол = 90°', kz:'Тік бұрыш = 90°', en:'Right angle = 90°'} },
   ],
   history: [
     { q:{ru:'В каком году была принята Конституция Республики Казахстан?', kz:'Қазақстан Республикасының Конституциясы қай жылы қабылданды?', en:'In what year was the Constitution of the Republic of Kazakhstan adopted?'}, opts:[{ru:'1991',kz:'1991',en:'1991'},{ru:'1992',kz:'1992',en:'1992'},{ru:'1993',kz:'1993',en:'1993'},{ru:'1995',kz:'1995',en:'1995'}], ans:3, exp:{ru:'Конституция РК принята 30 августа 1995 года.', kz:'ҚР Конституциясы 1995 жылғы 30 тамызда қабылданды.', en:'The Constitution of the RK was adopted on August 30, 1995.'} },
     { q:{ru:'Кто был первым президентом Казахстана?', kz:'Қазақстанның бірінші президенті кім болды?', en:'Who was the first president of Kazakhstan?'}, opts:[{ru:'Касым-Жомарт Токаев',kz:'Қасым-Жомарт Тоқаев',en:'Kassym-Jomart Tokayev'},{ru:'Нурсултан Назарбаев',kz:'Нұрсұлтан Назарбаев',en:'Nursultan Nazarbayev'},{ru:'Динмухамед Кунаев',kz:'Дінмұхамед Қонаев',en:'Dinmukhamed Kunaev'},{ru:'Жамбыл Жабаев',kz:'Жамбыл Жабаев',en:'Zhambyl Zhabayev'}], ans:1, exp:{ru:'Нурсултан Назарбаев — первый президент.', kz:'Нұрсұлтан Назарбаев — бірінші президент.', en:'Nursultan Nazarbayev — the first president.'} },
     { q:{ru:'Столица Казахстана с 1997 года:', kz:'1997 жылдан бастап Қазақстанның астанасы:', en:'The capital of Kazakhstan since 1997:'}, opts:[{ru:'Алматы',kz:'Алматы',en:'Almaty'},{ru:'Шымкент',kz:'Шымкент',en:'Shymkent'},{ru:'Астана',kz:'Астана',en:'Astana'},{ru:'Семей',kz:'Семей',en:'Semey'}], ans:2, exp:{ru:'Астана (ранее Акмола) — столица с 1997 года.', kz:'Астана (бұрынғы Ақмола) — 1997 жылдан бастап астана.', en:'Astana (formerly Akmola) — capital since 1997.'} },
     { q:{ru:'Казахстан обрел независимость в:', kz:'Қазақстан тәуелсіздік алды:', en:'Kazakhstan gained independence in:'}, opts:[{ru:'1990',kz:'1990',en:'1990'},{ru:'1991',kz:'1991',en:'1991'},{ru:'1992',kz:'1992',en:'1992'},{ru:'1993',kz:'1993',en:'1993'}], ans:1, exp:{ru:'16 декабря 1991 года.', kz:'1991 жылғы 16 желтоқсан.', en:'December 16, 1991.'} },
+    { q:{ru:'Кто основал Казахское ханство?', kz:'Қазақ хандығын кім құрды?', en:'Who founded the Kazakh Khanate?'}, opts:[{ru:'Абылай хан',kz:'Абылай хан',en:'Abylai Khan'},{ru:'Керей и Жанибек',kz:'Керей мен Жәнібек',en:'Kerei and Zhanibek'},{ru:'Касым хан',kz:'Қасым хан',en:'Kasym Khan'},{ru:'Есим хан',kz:'Есім хан',en:'Esim Khan'}], ans:1, exp:{ru:'Казахское ханство основали султаны Керей и Жанибек в 1465 году.', kz:'Қазақ хандығын сұлтандар Керей мен Жәнібек 1465 жылы құрды.', en:'The Kazakh Khanate was founded by sultans Kerei and Zhanibek in 1465.'} },
+    { q:{ru:'Какое событие произошло в 1916 году в Казахстане?', kz:'1916 жылы Қазақстанда қандай оқиға болды?', en:'What event happened in 1916 in Kazakhstan?'}, opts:[{ru:'Октябрьская революция',kz:'Қазан революциясы',en:'October Revolution'},{ru:'Национально-освободительное восстание',kz:'Ұлт-азаттық көтеріліс',en:'National liberation uprising'},{ru:'Коллективизация',kz:'Ұжымдастыру',en:'Collectivization'},{ru:'Голод',kz:'Ашаршылық',en:'Famine'}], ans:1, exp:{ru:'В 1916 году произошло национально-освободительное восстание против царского указа о мобилизации на тыловые работы.', kz:'1916 жылы патшаның тыл жұмыстарына шақыру туралы жарлығына қарсы ұлт-азаттық көтеріліс болды.', en:'In 1916, a national liberation uprising took place against the tsar\'s decree on mobilization for rear work.'} },
+    { q:{ru:'Декларация о государственном суверенитете Казахстана была принята:', kz:'Қазақстанның мемлекеттік егемендігі туралы декларация қашан қабылданды?', en:'When was the Declaration of State Sovereignty of Kazakhstan adopted?'}, opts:[{ru:'1990',kz:'1990',en:'1990'},{ru:'1991',kz:'1991',en:'1991'},{ru:'1992',kz:'1992',en:'1992'},{ru:'1993',kz:'1993',en:'1993'}], ans:0, exp:{ru:'Декларация о суверенитете принята 25 октября 1990 года.', kz:'Егемендік туралы декларация 1990 жылғы 25 қазанда қабылданды.', en:'The Declaration of Sovereignty was adopted on October 25, 1990.'} },
+    { q:{ru:'Годы Великой Отечественной войны:', kz:'Ұлы Отан соғысының жылдары:', en:'Years of the Great Patriotic War:'}, opts:[{ru:'1939-1945',kz:'1939-1945',en:'1939-1945'},{ru:'1941-1945',kz:'1941-1945',en:'1941-1945'},{ru:'1941-1944',kz:'1941-1944',en:'1941-1944'},{ru:'1940-1945',kz:'1940-1945',en:'1940-1945'}], ans:1, exp:{ru:'Великая Отечественная война длилась с 1941 по 1945 год.', kz:'Ұлы Отан соғысы 1941-1945 жылдар аралығында болды.', en:'The Great Patriotic War lasted from 1941 to 1945.'} },
   ],
   biology: [
     { q:{ru:'Основная функция митохондрий в клетке:', kz:'Клеткадағы митохондриялардың негізгі қызметі:', en:'The main function of mitochondria in the cell:'}, opts:[{ru:'Синтез белков',kz:'Ақуыздар синтезі',en:'Protein synthesis'},{ru:'Выработка энергии (АТФ)',kz:'Энергия өндіру (АТФ)',en:'Energy production (ATP)'},{ru:'Хранение ДНК',kz:'ДНК сақтау',en:'DNA storage'},{ru:'Фотосинтез',kz:'Фотосинтез',en:'Photosynthesis'}], ans:1, exp:{ru:'Митохондрии — энергетические станции клетки.', kz:'Митохондриялар — клетканың энергетикалық станциялары.', en:'Mitochondria are the energy stations of the cell.'} },
     { q:{ru:'Сколько хромосом содержится в соматических клетках человека?', kz:'Адамның соматикалық клеткаларында қанша хромосома бар?', en:'How many chromosomes are there in human somatic cells?'}, opts:[{ru:'23',kz:'23',en:'23'},{ru:'46',kz:'46',en:'46'},{ru:'44',kz:'44',en:'44'},{ru:'48',kz:'48',en:'48'}], ans:1, exp:{ru:'46 хромосом (23 пары).', kz:'46 хромосома (23 жұп).', en:'46 chromosomes (23 pairs).'} },
+    { q:{ru:'Как называется процесс деления клетки, при котором образуются две идентичные дочерние клетки?', kz:'Екі бірдей қыз клетка пайда болатын клетка бөліну процесі қалай аталады?', en:'What is the process of cell division that produces two identical daughter cells called?'}, opts:[{ru:'Мейоз',kz:'Мейоз',en:'Meiosis'},{ru:'Митоз',kz:'Митоз',en:'Mitosis'},{ru:'Фотосинтез',kz:'Фотосинтез',en:'Photosynthesis'},{ru:'Биосинтез',kz:'Биосинтез',en:'Biosynthesis'}], ans:1, exp:{ru:'Митоз — деление клетки, приводящее к образованию двух идентичных клеток.', kz:'Митоз — екі бірдей клетканың пайда болуына әкелетін клетка бөлінуі.', en:'Mitosis is cell division that results in two identical cells.'} },
+    { q:{ru:'Какой органоид отвечает за фотосинтез в растительных клетках?', kz:'Өсімдік клеткаларында фотосинтезге қандай органоид жауап береді?', en:'Which organelle is responsible for photosynthesis in plant cells?'}, opts:[{ru:'Митохондрии',kz:'Митохондрия',en:'Mitochondria'},{ru:'Ядро',kz:'Ядро',en:'Nucleus'},{ru:'Хлоропласты',kz:'Хлоропласт',en:'Chloroplasts'},{ru:'Рибосомы',kz:'Рибосома',en:'Ribosomes'}], ans:2, exp:{ru:'Хлоропласты содержат хлорофилл и осуществляют фотосинтез.', kz:'Хлоропластар құрамында хлорофилл бар және фотосинтезді жүзеге асырады.', en:'Chloroplasts contain chlorophyll and carry out photosynthesis.'} },
+    { q:{ru:'Какая молекула является носителем генетической информации?', kz:'Генетикалық ақпараттың тасымалдаушысы қандай молекула?', en:'Which molecule is the carrier of genetic information?'}, opts:[{ru:'РНК',kz:'РНҚ',en:'RNA'},{ru:'Белок',kz:'Ақуыз',en:'Protein'},{ru:'ДНК',kz:'ДНҚ',en:'DNA'},{ru:'АТФ',kz:'АТФ',en:'ATP'}], ans:2, exp:{ru:'ДНК (дезоксирибонуклеиновая кислота) хранит генетическую информацию.', kz:'ДНҚ (дезоксирибонуклеин қышқылы) генетикалық ақпаратты сақтайды.', en:'DNA (deoxyribonucleic acid) stores genetic information.'} },
+    { q:{ru:'Какой процесс обеспечивает организм энергией?', kz:'Ағзаны қуатпен қандай процесс қамтамасыз етеді?', en:'Which process provides the body with energy?'}, opts:[{ru:'Дыхание',kz:'Тыныс алу',en:'Respiration'},{ru:'Фотосинтез',kz:'Фотосинтез',en:'Photosynthesis'},{ru:'Транскрипция',kz:'Транскрипция',en:'Transcription'},{ru:'Трансляция',kz:'Трансляция',en:'Translation'}], ans:0, exp:{ru:'Дыхание (клеточное дыхание) обеспечивает организм энергией в виде АТФ.', kz:'Тыныс алу (клеткалық тыныс алу) ағзаны АТФ түріндегі қуатпен қамтамасыз етеді.', en:'Respiration (cellular respiration) provides the body with energy in the form of ATP.'} },
+    { q:{ru:'Кровь относится к какому типу тканей?', kz:'Қан қандай ұлпа түріне жатады?', en:'What type of tissue does blood belong to?'}, opts:[{ru:'Эпителиальной',kz:'Эпителий',en:'Epithelial'},{ru:'Соединительной',kz:'Байланыстырушы',en:'Connective'},{ru:'Мышечной',kz:'Бұлшықет',en:'Muscle'},{ru:'Нервной',kz:'Жүйке',en:'Nervous'}], ans:1, exp:{ru:'Кровь — жидкая соединительная ткань.', kz:'Қан — сұйық байланыстырушы ұлпа.', en:'Blood is a liquid connective tissue.'} },
   ],
   chemistry: [
     { q:{ru:'Атомный номер углерода в таблице Менделеева:', kz:'Менделеев кестесінде көміртектің атомдық нөмірі:', en:'The atomic number of carbon in the periodic table:'}, opts:[{ru:'4',kz:'4',en:'4'},{ru:'6',kz:'6',en:'6'},{ru:'8',kz:'8',en:'8'},{ru:'12',kz:'12',en:'12'}], ans:1, exp:{ru:'Углерод (C) имеет атомный номер 6.', kz:'Көміртек (C) атомдық нөмірі 6.', en:'Carbon (C) has atomic number 6.'} },
     { q:{ru:'Химическая формула воды:', kz:'Судың химиялық формуласы:', en:'The chemical formula of water:'}, opts:[{ru:'H₂O₂',kz:'H₂O₂',en:'H₂O₂'},{ru:'HO',kz:'HO',en:'HO'},{ru:'H₂O',kz:'H₂O',en:'H₂O'},{ru:'H₃O',kz:'H₃O',en:'H₃O'}], ans:2, exp:{ru:'Вода — H₂O.', kz:'Су — H₂O.', en:'Water is H₂O.'} },
+    { q:{ru:'Формула поваренной соли:', kz:'Ас тұзының формуласы:', en:'Formula of table salt:'}, opts:[{ru:'NaCl',kz:'NaCl',en:'NaCl'},{ru:'KCl',kz:'KCl',en:'KCl'},{ru:'CaCl₂',kz:'CaCl₂',en:'CaCl₂'},{ru:'Na₂CO₃',kz:'Na₂CO₃',en:'Na₂CO₃'}], ans:0, exp:{ru:'Поваренная соль — хлорид натрия (NaCl).', kz:'Ас тұзы — натрий хлориді (NaCl).', en:'Table salt is sodium chloride (NaCl).'} },
+    { q:{ru:'Какой газ выделяется при фотосинтезе?', kz:'Фотосинтез кезінде қандай газ бөлінеді?', en:'Which gas is released during photosynthesis?'}, opts:[{ru:'Кислород',kz:'Оттегі',en:'Oxygen'},{ru:'Углекислый газ',kz:'Көмірқышқыл газы',en:'Carbon dioxide'},{ru:'Азот',kz:'Азот',en:'Nitrogen'},{ru:'Водород',kz:'Сутегі',en:'Hydrogen'}], ans:0, exp:{ru:'При фотосинтезе выделяется кислород.', kz:'Фотосинтез кезінде оттегі бөлінеді.', en:'Oxygen is released during photosynthesis.'} },
+    { q:{ru:'Кислоты в водном растворе изменяют цвет лакмуса на:', kz:'Қышқылдар сулы ерітіндіде лакмус түсін қандай өзгертеді?', en:'Acids in aqueous solution change the color of litmus to:'}, opts:[{ru:'Синий',kz:'Көк',en:'Blue'},{ru:'Фиолетовый',kz:'Күлгін',en:'Purple'},{ru:'Красный',kz:'Қызыл',en:'Red'},{ru:'Желтый',kz:'Сары',en:'Yellow'}], ans:2, exp:{ru:'Кислоты окрашивают лакмус в красный цвет.', kz:'Қышқылдар лакмусты қызыл түске бояйды.', en:'Acids turn litmus red.'} },
+    { q:{ru:'Какой элемент самый распространенный в земной коре?', kz:'Жер қыртысында ең көп таралған элемент қайсы?', en:'Which element is the most abundant in the Earth\'s crust?'}, opts:[{ru:'Кремний',kz:'Кремний',en:'Silicon'},{ru:'Алюминий',kz:'Алюминий',en:'Aluminum'},{ru:'Железо',kz:'Темір',en:'Iron'},{ru:'Кислород',kz:'Оттегі',en:'Oxygen'}], ans:3, exp:{ru:'Кислород — самый распространенный элемент (около 49%).', kz:'Оттегі — ең көп таралған элемент (шамамен 49%).', en:'Oxygen is the most abundant element (about 49%).'} },
+    { q:{ru:'Какая формула у серной кислоты?', kz:'Күкірт қышқылының формуласы қандай?', en:'What is the formula of sulfuric acid?'}, opts:[{ru:'H₂SO₃',kz:'H₂SO₃',en:'H₂SO₃'},{ru:'H₂SO₄',kz:'H₂SO₄',en:'H₂SO₄'},{ru:'HNO₃',kz:'HNO₃',en:'HNO₃'},{ru:'HCl',kz:'HCl',en:'HCl'}], ans:1, exp:{ru:'Серная кислота — H₂SO₄.', kz:'Күкірт қышқылы — H₂SO₄.', en:'Sulfuric acid is H₂SO₄.'} },
   ],
   physics: [
     { q:{ru:'Формула второго закона Ньютона:', kz:'Ньютонның екінші заңының формуласы:', en:'The formula of Newton\'s second law:'}, opts:[{ru:'F = ma',kz:'F = ma',en:'F = ma'},{ru:'F = mv',kz:'F = mv',en:'F = mv'},{ru:'F = m/a',kz:'F = m/a',en:'F = m/a'},{ru:'F = m²a',kz:'F = m²a',en:'F = m²a'}], ans:0, exp:{ru:'F = ma.', kz:'F = ma.', en:'F = ma.'} },
     { q:{ru:'Единица измерения электрического сопротивления:', kz:'Электрлік кедергінің өлшем бірлігі:', en:'The unit of electrical resistance:'}, opts:[{ru:'Ампер',kz:'Ампер',en:'Ampere'},{ru:'Вольт',kz:'Вольт',en:'Volt'},{ru:'Ом',kz:'Ом',en:'Ohm'},{ru:'Ватт',kz:'Ватт',en:'Watt'}], ans:2, exp:{ru:'Сопротивление измеряется в Омах.', kz:'Кедергі Оммен өлшенеді.', en:'Resistance is measured in Ohms.'} },
+    { q:{ru:'Скорость света в вакууме примерно равна:', kz:'Вакуумдегі жарық жылдамдығы шамамен:', en:'The speed of light in vacuum is approximately:'}, opts:[{ru:'3×10⁶ м/с',kz:'3×10⁶ м/с',en:'3×10⁶ m/s'},{ru:'3×10⁸ м/с',kz:'3×10⁸ м/с',en:'3×10⁸ m/s'},{ru:'3×10¹⁰ м/с',kz:'3×10¹⁰ м/с',en:'3×10¹⁰ m/s'},{ru:'3×10⁵ м/с',kz:'3×10⁵ м/с',en:'3×10⁵ m/s'}], ans:1, exp:{ru:'c ≈ 300 000 км/с = 3×10⁸ м/с', kz:'c ≈ 300 000 км/с = 3×10⁸ м/с', en:'c ≈ 300,000 km/s = 3×10⁸ m/s'} },
+    { q:{ru:'Какая сила удерживает планеты на орбитах вокруг Солнца?', kz:'Планеталарды Күн айналасындағы орбитада ұстап тұрған қандай күш?', en:'What force keeps planets in orbit around the Sun?'}, opts:[{ru:'Электромагнитная',kz:'Электромагниттік',en:'Electromagnetic'},{ru:'Ядерная',kz:'Ядролық',en:'Nuclear'},{ru:'Гравитационная',kz:'Гравитациялық',en:'Gravitational'},{ru:'Магнитная',kz:'Магниттік',en:'Magnetic'}], ans:2, exp:{ru:'Гравитационная сила притяжения удерживает планеты на орбитах.', kz:'Гравитациялық тартылыс күші планеталарды орбитада ұстап тұрады.', en:'Gravitational attraction keeps planets in orbit.'} },
+    { q:{ru:'Закон Ома для участка цепи выражается формулой:', kz:'Тізбек бөлігі үшін Ом заңының формуласы:', en:'Ohm\'s law for a section of a circuit is expressed by the formula:'}, opts:[{ru:'I = U/R',kz:'I = U/R',en:'I = U/R'},{ru:'I = UR',kz:'I = UR',en:'I = UR'},{ru:'U = I/R',kz:'U = I/R',en:'U = I/R'},{ru:'R = IU',kz:'R = IU',en:'R = IU'}], ans:0, exp:{ru:'Сила тока прямо пропорциональна напряжению и обратно пропорциональна сопротивлению.', kz:'Ток күші кернеуге тура пропорционал және кедергіге кері пропорционал.', en:'Current is directly proportional to voltage and inversely proportional to resistance.'} },
+    { q:{ru:'Какая частица имеет положительный заряд?', kz:'Қандай бөлшек оң зарядқа ие?', en:'Which particle has a positive charge?'}, opts:[{ru:'Электрон',kz:'Электрон',en:'Electron'},{ru:'Нейтрон',kz:'Нейтрон',en:'Neutron'},{ru:'Протон',kz:'Протон',en:'Proton'},{ru:'Фотон',kz:'Фотон',en:'Photon'}], ans:2, exp:{ru:'Протон имеет положительный электрический заряд.', kz:'Протон оң электр зарядына ие.', en:'Protons have a positive electric charge.'} },
+    { q:{ru:'Какой прибор измеряет силу тока?', kz:'Ток күшін қандай құрал өлшейді?', en:'Which device measures electric current?'}, opts:[{ru:'Вольтметр',kz:'Вольтметр',en:'Voltmeter'},{ru:'Амперметр',kz:'Амперметр',en:'Ammeter'},{ru:'Омметр',kz:'Омметр',en:'Ohmmeter'},{ru:'Динамометр',kz:'Динамометр',en:'Dynamometer'}], ans:1, exp:{ru:'Амперметр измеряет силу тока в амперах.', kz:'Амперметр ток күшін ампермен өлшейді.', en:'An ammeter measures current in amperes.'} },
   ],
   geography: [
     { q:{ru:'Самое крупное озеро Казахстана:', kz:'Қазақстанның ең үлкен көлі:', en:'The largest lake in Kazakhstan:'}, opts:[{ru:'Аральское море',kz:'Арал теңізі',en:'Aral Sea'},{ru:'Балхаш',kz:'Балқаш',en:'Balkhash'},{ru:'Зайсан',kz:'Зайсан',en:'Zaysan'},{ru:'Алаколь',kz:'Алақөл',en:'Alakol'}], ans:1, exp:{ru:'Озеро Балхаш — крупнейшее.', kz:'Балқаш көлі — ең үлкен.', en:'Lake Balkhash is the largest.'} },
+    { q:{ru:'Какая страна самая большая по площади в мире?', kz:'Әлемдегі ең үлкен аумағы бар ел қайсы?', en:'Which country is the largest by area in the world?'}, opts:[{ru:'Канада',kz:'Канада',en:'Canada'},{ru:'Китай',kz:'Қытай',en:'China'},{ru:'США',kz:'АҚШ',en:'USA'},{ru:'Россия',kz:'Ресей',en:'Russia'}], ans:3, exp:{ru:'Россия — самая большая страна в мире по площади.', kz:'Ресей — аумағы бойынша әлемдегі ең үлкен ел.', en:'Russia is the largest country in the world by area.'} },
+    { q:{ru:'Самая высокая горная вершина мира:', kz:'Әлемдегі ең биік тау шыңы:', en:'The highest mountain peak in the world:'}, opts:[{ru:'Эверест (Джомолунгма)',kz:'Эверест (Джомолунгма)',en:'Everest (Mount Everest)'},{ru:'К2',kz:'K2',en:'K2'},{ru:'Канченджанга',kz:'Канченджанга',en:'Kanchenjunga'},{ru:'Лхоцзе',kz:'Лхоцзе',en:'Lhotse'}], ans:0, exp:{ru:'Эверест (Джомолунгма) — высота 8848 м.', kz:'Эверест (Джомолунгма) — биіктігі 8848 м.', en:'Mount Everest — height 8848 m.'} },
+    { q:{ru:'Самый длинный день в году в Северном полушарии:', kz:'Солтүстік жарты шарда жылдың ең ұзақ күні:', en:'The longest day of the year in the Northern Hemisphere:'}, opts:[{ru:'22 июня',kz:'22 маусым',en:'June 22'},{ru:'21 марта',kz:'21 наурыз',en:'March 21'},{ru:'23 сентября',kz:'23 қыркүйек',en:'September 23'},{ru:'22 декабря',kz:'22 желтоқсан',en:'December 22'}], ans:0, exp:{ru:'22 июня — день летнего солнцестояния, самый длинный день.', kz:'22 маусым — жазғы күн тоқырау күні, ең ұзақ күн.', en:'June 22 is the summer solstice, the longest day.'} },
+    { q:{ru:'Какая пустыня находится в Казахстане?', kz:'Қазақстанда қандай шөл бар?', en:'Which desert is located in Kazakhstan?'}, opts:[{ru:'Сахара',kz:'Сахара',en:'Sahara'},{ru:'Кызылкум',kz:'Қызылқұм',en:'Kyzylkum'},{ru:'Гоби',kz:'Гоби',en:'Gobi'},{ru:'Калахари',kz:'Калахари',en:'Kalahari'}], ans:1, exp:{ru:'Пустыня Кызылкум находится на территории Казахстана и Узбекистана.', kz:'Қызылқұм шөлі Қазақстан мен Өзбекстан аумағында орналасқан.', en:'The Kyzylkum Desert is located in Kazakhstan and Uzbekistan.'} },
   ],
   kazakh: [
     { q:{ru:'Ресми іс қағаздарын жазуда қолданылатын стиль:', kz:'Ресми іс қағаздарын жазуда қолданылатын стиль:', en:'The style used in writing official documents:'}, opts:[{ru:'Публицистикалық',kz:'Публицистикалық',en:'Journalistic'},{ru:'Ресми-іскерлік',kz:'Ресми-іскерлік',en:'Official-business'},{ru:'Ғылыми',kz:'Ғылыми',en:'Scientific'},{ru:'Көркем',kz:'Көркем',en:'Artistic'}], ans:1, exp:{ru:'Ресми-іскерлік стиль.', kz:'Ресми-іскерлік стиль.', en:'Official-business style.'} },
+    { q:{ru:'Қазақ тіліндегі дауысты дыбыстар саны:', kz:'Қазақ тіліндегі дауысты дыбыстар саны:', en:'The number of vowel sounds in the Kazakh language:'}, opts:[{ru:'6',kz:'6',en:'6'},{ru:'7',kz:'7',en:'7'},{ru:'8',kz:'8',en:'8'},{ru:'9',kz:'9',en:'9'}], ans:3, exp:{ru:'Қазақ тілінде 9 дауысты дыбыс бар: а, ә, е, о, ө, ұ, ү, ы, і.', kz:'Қазақ тілінде 9 дауысты дыбыс бар: а, ә, е, о, ө, ұ, ү, ы, і.', en:'The Kazakh language has 9 vowels: a, ä, e, o, ö, u, ü, y, i.'} },
+    { q:{ru:'Сөйлемнің бастауышын білдіретін сөз табы:', kz:'Сөйлемнің бастауышын білдіретін сөз табы:', en:'The part of speech that expresses the subject of a sentence:'}, opts:[{ru:'Етістік',kz:'Етістік',en:'Verb'},{ru:'Сын есім',kz:'Сын есім',en:'Adjective'},{ru:'Зат есім',kz:'Зат есім',en:'Noun'},{ru:'Үстеу',kz:'Үстеу',en:'Adverb'}], ans:2, exp:{ru:'Бастауыш зат есіммен немесе есімдікпен білдіріледі.', kz:'Бастауыш зат есіммен немесе есімдікпен білдіріледі.', en:'The subject is expressed by a noun or pronoun.'} },
   ],
   literature: [
     { q:{ru:'Кто написал поэму "Путь Абая"?', kz:'"Абай жолы" поэмасын кім жазды?', en:'Who wrote the poem "The Path of Abai"?'}, opts:[{ru:'Абай Кунанбаев',kz:'Абай Құнанбаев',en:'Abai Kunanbayev'},{ru:'Мухтар Ауэзов',kz:'Мұхтар Әуезов',en:'Mukhtar Auezov'},{ru:'Жамбыл Жабаев',kz:'Жамбыл Жабаев',en:'Zhambyl Zhabayev'},{ru:'Ильяс Джансугуров',kz:'Ілияс Жансүгіров',en:'Ilyas Zhansugurov'}], ans:1, exp:{ru:'Мухтар Ауэзов.', kz:'Мұхтар Әуезов.', en:'Mukhtar Auezov.'} },
+    { q:{ru:'Кто автор поэмы "Қобыланды батыр"?', kz:'"Қобыланды батыр" поэмасының авторы кім?', en:'Who is the author of the poem "Kobylandy Batyr"?'}, opts:[{ru:'Нурпеис Байганин',kz:'Нұрпейіс Байғанин',en:'Nurpeis Baiganin'},{ru:'Шернияз Жарылгасов',kz:'Шернияз Жарылғасов',en:'Sherniyaz Zharylgasov'},{ru:'Махамбет Утемисов',kz:'Махамбет Өтемісов',en:'Makhambet Utemisov'},{ru:'Абай Кунанбаев',kz:'Абай Құнанбаев',en:'Abai Kunanbayev'}], ans:0, exp:{ru:'Поэма "Қобыланды батыр" — народный эпос, записанный Нурпеисом Байганиным.', kz:'"Қобыланды батыр" поэмасы — Нұрпейіс Байғанин жазған халық эпосы.', en:'"Kobylandy Batyr" is a folk epic recorded by Nurpeis Baiganin.'} },
+    { q:{ru:'Кто является автором романа "Қан мен тер"?', kz:'"Қан мен тер" романының авторы кім?', en:'Who is the author of the novel "Blood and Sweat"?'}, opts:[{ru:'Мұхтар Әуезов',kz:'Мұхтар Әуезов',en:'Mukhtar Auezov'},{ru:'Әбдіжәміл Нұрпейісов',kz:'Әбдіжәміл Нұрпейісов',en:'Abdyzhamil Nurpeisov'},{ru:'Ғабит Мүсірепов',kz:'Ғабит Мүсірепов',en:'Gabit Musrepov'},{ru:'Сәкен Сейфуллин',kz:'Сәкен Сейфуллин',en:'Saken Seifullin'}], ans:1, exp:{ru:'Роман "Қан мен тер" написан Абдижамилом Нурпеисовым.', kz:'"Қан мен тер" романының авторы — Әбдіжәміл Нұрпейісов.', en:'The novel "Blood and Sweat" was written by Abdyzhamil Nurpeisov.'} },
+    { q:{ru:'Какое произведение написал Шакарим Кудайбердиев?', kz:'Шәкәрім Құдайбердиев қандай шығарма жазды?', en:'Which work was written by Shakarim Kudaiberdiev?'}, opts:[{ru:'"Еңлік-Кебек"',kz:'"Еңлік-Кебек"',en:'"Enlik-Kebek"'},{ru:'"Қамар сұлу"',kz:'"Қамар сұлу"',en:'"Kamar Sulu"'},{ru:'"Бақытсыз Жамал"',kz:'"Бақытсыз Жамал"',en:'"Baqytsyz Jamal"'},{ru:'"Масғұт"',kz:'"Масғұт"',en:'"Masgut"'}], ans:2, exp:{ru:'Шакарим написал роман "Бақытсыз Жамал".', kz:'Шәкәрім "Бақытсыз Жамал" романын жазды.', en:'Shakarim wrote the novel "Baqytsyz Jamal".'} },
   ]
 };
 
@@ -860,14 +982,6 @@ let timeLeft = 0;
 let testTimer = null;
 let testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
 
-// =================== API KEYS (alem.plus) ===================
-const ALEM_API = {
-  alemllm: { key: 'sk-O1GwtY734qQtiZw9YlRVCQ', url: 'https://llm.alem.ai/v1/chat/completions', model: 'alemllm' },
-  kazllm: { key: 'sk-r-OVjlrI_QRGBC8BW9tKvw', url: 'https://llm.alem.ai/v1/chat/completions', model: 'kazllm' },
-  stt: { key: 'sk-v-NTBaT--JFb8Q6eL4lgog', url: 'https://llm.alem.ai/v1/audio/transcriptions' },
-  embedder: { key: 'sk-Cxa2F3WzR41rCC0Ww2iQOA', url: 'https://llm.alem.ai/v1/embeddings' }
-};
-
 // SUBJECTS
 const SUBJECTS = [
   { id:'math', emoji:'📐', name:{ru:'Математика', kz:'Математика', en:'Mathematics'} },
@@ -880,6 +994,34 @@ const SUBJECTS = [
   { id:'literature', emoji:'📚', name:{ru:'Литература', kz:'Әдебиет', en:'Literature'} }
 ];
 
+let selectedSubjects = [];
+
+// =================== ФУНКЦИИ HEADER ===================
+function toggleMobileMenu() {
+  document.body.classList.toggle('menu-open');
+}
+
+function closeMobileMenu() {
+  document.body.classList.remove('menu-open');
+}
+
+function toggleLangMenu() {
+  document.body.classList.toggle('lang-open');
+}
+
+function closeLangMenu() {
+  document.body.classList.remove('lang-open');
+}
+
+function updateLangDropdownUI() {
+  const map = { kz: 'ҚАЗ', ru: 'РУС', en: 'ENG' };
+  const current = document.querySelector('.lang-current');
+  if (current) current.textContent = map[currentLang] || 'РУС';
+  document.querySelectorAll('.lang-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+}
+
 // =================== LANG ===================
 function setLang(lang) {
   currentLang = lang;
@@ -888,6 +1030,8 @@ function setLang(lang) {
   });
   applyTranslations();
   renderSubjectSelector();
+  updateLangDropdownUI();
+  closeLangMenu();
   // If test is active, re-render the current question
   if (document.getElementById('test-active').style.display === 'block') {
     renderQuestion();
@@ -907,7 +1051,7 @@ function renderSubjectSelector() {
   const container = document.getElementById('subject-selector');
   if (!container) return;
   container.innerHTML = SUBJECTS.map(s => `
-    <div class="subject-item" onclick="toggleSubject('${s.id}')">
+    <div class="subject-item" onclick="toggleSubject('${s.id}')" data-subject="${s.id}">
       <span class="subject-item-emoji">${s.emoji}</span>
       <span class="subject-item-name">${s.name[currentLang]}</span>
       <span class="subject-item-count">${(QUESTIONS_DB[s.id]||[]).length}</span>
@@ -915,15 +1059,14 @@ function renderSubjectSelector() {
   `).join('');
 }
 
-let selectedSubjects = [];
 function toggleSubject(id) {
-  const el = event.target.closest('.subject-item');
+  const el = document.querySelector(`.subject-item[data-subject="${id}"]`);
   if (selectedSubjects.includes(id)) {
     selectedSubjects = selectedSubjects.filter(x => x !== id);
-    el.classList.remove('active');
+    if (el) el.classList.remove('active');
   } else {
     selectedSubjects.push(id);
-    el.classList.add('active');
+    if (el) el.classList.add('active');
   }
 }
 
@@ -938,8 +1081,17 @@ function startTest() {
   const count = parseInt(document.getElementById('q-count').value);
   let pool = [];
   selected.forEach(sid => { const qs = (QUESTIONS_DB[sid]||[]).map(q => ({...q, subject:sid})); pool = pool.concat(qs); });
+  
+  // Если вопросов меньше нужного количества — дополняем с повторением и перемешиванием
+  while (pool.length < count) {
+    let extraPool = [];
+    selected.forEach(sid => { const qs = (QUESTIONS_DB[sid]||[]).map(q => ({...q, subject:sid})); extraPool = extraPool.concat(qs); });
+    pool = pool.concat(extraPool);
+  }
+  
   pool.sort(() => Math.random()-0.5);
-  testQuestions = pool.slice(0, Math.min(count, pool.length));
+  testQuestions = pool.slice(0, count);
+  
   currentQIndex = 0; correctCount = 0; wrongCount = 0; skipCount = 0; answered = false;
   document.getElementById('test-setup').style.display = 'none';
   document.getElementById('test-active').style.display = 'block';
@@ -1025,6 +1177,12 @@ function finishTest() {
 window.addEventListener('DOMContentLoaded', () => {
   applyTranslations();
   renderSubjectSelector();
+  updateLangDropdownUI();
+  
+  // Закрытие меню при клике вне
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.lang-dropdown')) closeLangMenu();
+  });
 });
 </script>
 </body>
